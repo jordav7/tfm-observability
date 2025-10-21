@@ -1,0 +1,50 @@
+# Archivos generados por LaTeX
+*.aux
+*.bbl
+*.blg
+*.brf
+*.idx
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.out
+*.toc
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.run.xml
+*.nav
+*.snm
+*.vrb
+
+# Archivos de backup
+*~
+*.bak
+*.sav
+
+# Archivos de compilación de pdf/ps
+*.dvi
+*.pdf
+*.ps
+
+# Carpeta oculta de LaTeX Workshop (VS Code)
+.latexmkrc
+.latexindent.yaml
+*.latexmain
+
+# Archivos temporales de editores
+.DS_Store
+Thumbs.db
+
+# Carpeta de salida (si usas una como "build" o "output")
+build/
+output/
+.vscode/

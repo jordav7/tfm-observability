@@ -1,0 +1,58 @@
+\chapter{Contexto y estado del arte}\label{chap:objetivos}
+%--- Genereal Objectives ---%
+El presente capítulo tiene como objetivo contextualizar el trabajo dentro del ámbito tecnológico actual, abordando los conceptos fundamentales, tecnologías relevantes y principales herramientas empleadas en sistemas distribuidos y arquitecturas de microservicios. Se describen los antecedentes teóricos y técnicos relacionados con la observabilidad, así como los enfoques más destacados en la industria y la academia.
+
+Además, se analizan trabajos relacionados y se justifica la elección de las tecnologías utilizadas en esta propuesta. Finalmente, se extraen conclusiones que fundamentan la pertinencia y el valor añadido del enfoque desarrollado en este Trabajo Fin de Máster.
+
+\section{Contextualización y antecedentes}\label{sec:contextyantec}
+La creciente complejidad de los sistemas distribuidos, en particular los basados en arquitecturas de microservicios, ha impulsado el desarrollo y adopción de nuevas prácticas y herramientas para la gestión eficiente de estos entornos. En este contexto, la observabilidad se ha convertido en un elemento clave para garantizar la fiabilidad, el mantenimiento y la evolución del software.
+
+Una arquitectura de microservicios consiste en la descomposición de una aplicación en múltiples servicios pequeños, autónomos y desplegables de forma independiente, tal como plantea \apa{Newman2015}. Esta forma de organización permite una mayor escalabilidad y flexibilidad, pero introduce importantes desafíos en cuanto al monitoreo, la gestión de logs y la trazabilidad de peticiones. A diferencia de los sistemas monolíticos, donde el diagnóstico de errores puede realizarse de forma centralizada, los microservicios requieren soluciones que permitan observar el comportamiento distribuido del sistema.
+
+El paradigma DevOps ha transformado también el ciclo de vida del software, promoviendo la automatización del desarrollo, despliegue y operación de aplicaciones. Sin embargo, para que este enfoque funcione eficazmente, es necesario contar con sistemas que permitan observar el estado de los servicios en todo momento. En este sentido, la observabilidad se basa en tres pilares fundamentales: monitorización, logging y tracing, tal como define \apa{Google2020} y refuerza la \apa{CNCF2023} (Cloud Native Computing Foundation) en sus estándares actuales.
+
+Las principales tecnologías que abordan estos aspectos incluyen:
+
+\begin{itemize}
+  \item Prometheus y Grafana, para recolección y visualización de métricas en tiempo real.
+  \item ELK Stack (Elasticsearch, Logstash y Kibana), para gestión y análisis de logs.
+  \item Jaeger y OpenTelemetry, para trazabilidad distribuida en entornos con múltiples servicios.
+\end{itemize}
+
+Estas herramientas están soportadas por comunidades activas y son utilizadas por empresas como Netflix, Uber, SoundCloud y otras que operan sistemas complejos a gran escala. Su adopción ha permitido identificar patrones de fallo, cuellos de botella, y realizar diagnósticos proactivos en producción.
+
+Además, tecnologías como Docker y Kubernetes se han convertido en el estándar para el despliegue y orquestación de microservicios. A través de ellas, es posible simular entornos de producción en local —por ejemplo, mediante Minikube—, y automatizar despliegues con herramientas como Helm y Terraform, facilitando tanto la reproducibilidad como la escalabilidad del sistema.
+
+En resumen, el contexto actual exige soluciones de observabilidad integradas, configurables, automatizadas y adaptadas a entornos altamente dinámicos, donde la fiabilidad del sistema depende de la capacidad de observar y reaccionar rápidamente ante eventos adversos.
+
+%--- Specific Objectives ---%
+\section{Trabajos relacionados}\label{sec:trabajos_relacionados}
+Existen numerosos trabajos académicos y técnicos que abordan aspectos parciales de la observabilidad en microservicios, pero pocos ofrecen una visión completa e integrada, especialmente desde una perspectiva práctica y automatizada.
+
+Por ejemplo, \apa{Zhang2020} proponen un modelo de observabilidad basado en métricas e inteligencia artificial para anticipar errores en sistemas distribuidos, pero se enfocan principalmente en el análisis predictivo y no en la integración de herramientas específicas. Por su parte, \apa{Singh2021} presentan un estudio sobre trazabilidad con Jaeger, pero sin contemplar el monitoreo ni la gestión de logs.
+
+Otras propuestas, como las de \apa{Perez2019}, se centran en el uso del stack ELK en sistemas monolíticos y su transición a microservicios, pero no abordan la orquestación ni la automatización de despliegue.
+
+En el ámbito industrial, grandes compañías como \apa{Uber2020} y \apa{Netflix2019} han publicado estudios de caso sobre el uso de Jaeger y Prometheus respectivamente, pero dichas soluciones suelen estar adaptadas a infraestructuras propias y no siempre son extrapolables a entornos más pequeños o académicos.
+
+De forma similar, muchas plataformas comerciales como DataDog o New Relic ofrecen soluciones de observabilidad "todo en uno", pero su carácter propietario, sus costes, y la dificultad de integración en entornos educativos o de código abierto, las excluyen como alternativas viables para este trabajo.
+
+Por tanto, se identifica un vacío en cuanto a propuestas accesibles, documentadas y reproducibles que integren herramientas open source líderes en los tres pilares de observabilidad, y que puedan ser desplegadas y mantenidas fácilmente por equipos DevOps de tamaño medio o pequeño.
+
+
+\section{Conclusiones del estado del arte}\label{sec:conclusionesSOTA}
+El estudio del estado del arte permite identificar las siguientes conclusiones clave que orientan el desarrollo de este Trabajo Fin de Máster:
+
+\begin{itemize}
+  \item Las arquitecturas de microservicios requieren soluciones de observabilidad completas, capaces de ofrecer visibilidad en tiempo real sobre el estado del sistema.
+  
+  \item Existen herramientas maduras para cada pilar de la observabilidad, pero su integración y automatización continúa siendo un reto técnico relevante.
+  
+  \item La mayoría de trabajos existentes se enfocan en uno o dos de los pilares (monitorización, logging o tracing), pero no abordan una solución integral y automatizada.
+  
+  \item La propuesta de este TFM se diferencia por ofrecer una integración práctica y reproducible de Prometheus, Grafana, ELK Stack, Jaeger y OpenTelemetry, todo desplegado en un entorno Kubernetes con automatización mediante Helm, y potencialmente Terraform.
+  
+  \item Esta solución pretende servir como modelo base replicable para entornos reales de desarrollo y operación, facilitando la mejora continua y la respuesta ágil ante incidentes.
+\end{itemize}
+
+En base a estas averiguaciones, se justifica plenamente el desarrollo de la solución propuesta, que aspira a cubrir una necesidad real y no del todo resuelta en el contexto actual de DevOps y microservicios.

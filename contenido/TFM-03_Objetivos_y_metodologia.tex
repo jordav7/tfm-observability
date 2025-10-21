@@ -1,0 +1,46 @@
+\chapter{Objetivos y metodología de trabajo}\label{chap:estadodelarte}
+El presente capítulo establece los objetivos que guían el desarrollo de este trabajo, tanto a nivel general como en aspectos específicos. Además, se describe la metodología adoptada para alcanzar dichos objetivos, detallando las fases, técnicas y herramientas que se utilizarán para implementar y evaluar la plataforma de observabilidad en microservicios con enfoque DevOps.
+
+\section{Objetivo general}\label{sec:objgeneral}
+El objetivo general de este trabajo es diseñar, implementar y evaluar una plataforma integral de observabilidad para arquitecturas de microservicios basada en prácticas DevOps, que permita el monitoreo, registro y trazabilidad efectivos de sistemas distribuidos, con el fin de mejorar la detección, diagnóstico y resolución de fallos, optimizando así la calidad y la fiabilidad del software.
+
+\section{Objetivos específicos}\label{sec:objespecificos}
+Para lograr el objetivo general, se plantean los siguientes objetivos específicos:
+
+\begin{itemize}
+	\item Definir y seleccionar claramente las herramientas de observabilidad que formarán parte del sistema, incluyendo Prometheus, Grafana, ELK Stack, OpenTelemetry y Jaeger.
+	
+	\item Elegir y configurar un repositorio de control de versiones y gestión del proyecto, optando por \textbf{GitHub} como plataforma base para el desarrollo colaborativo, así como utilizar \textbf{GitHub Actions} como herramienta de integración continua para automatizar los flujos de trabajo.
+	
+	\item Diseñar y desplegar una arquitectura de microservicios con Spring Boot que permita la integración de las herramientas de observabilidad.
+	
+	\item Implementar la automatización del despliegue utilizando Docker y Kubernetes, inicialmente sobre un entorno local (Minikube), con la posibilidad de ampliar la infraestructura mediante Terraform en futuras fases.
+	
+	\item Configurar el despliegue automatizado de las herramientas de observabilidad usando Helm y Ansible para facilitar la reproducibilidad y mantenimiento.
+	
+	\item Evaluar la eficacia del sistema para monitorizar, registrar y trazar las actividades y fallos en el entorno distribuido.
+	
+	\item Documentar exhaustivamente el proceso, incluyendo la configuración detallada de las herramientas, scripts de automatización y guías para replicar el entorno en otros contextos.
+\end{itemize}
+
+\section{Metodología del trabajo}\label{sec:metodologia_trabajo}
+Para alcanzar los objetivos planteados, se seguirá la siguiente metodología:
+
+\begin{enumerate}
+	\item \textbf{Definición y selección de herramientas}: Confirmación de las tecnologías que se utilizarán, priorizando herramientas estándar y ampliamente soportadas como Prometheus, Grafana, ELK Stack, OpenTelemetry y Jaeger. Se utilizará \textbf{GitHub} como repositorio principal para la gestión del código fuente, y \textbf{GitHub Actions} como plataforma de integración continua para automatizar los flujos de trabajo de construcción, pruebas y despliegue.
+	
+	\item \textbf{Diseño de la arquitectura}: Construcción de un sistema de microservicios básico usando Spring Boot, que permita la integración de los componentes de observabilidad.
+	
+	\item \textbf{Implementación y despliegue inicial}: Contenerización de microservicios y herramientas, con despliegue automatizado en un entorno local mediante Minikube y Kubernetes.
+	
+	\item \textbf{Automatización con Helm y Ansible}: Creación y configuración de Helm charts para las herramientas de observabilidad, junto con playbooks de Ansible para facilitar la instalación y configuración repetible.
+	
+	\item \textbf{Evaluación y pruebas}: Realización de pruebas funcionales y de carga para verificar el correcto monitoreo, logging y tracing del sistema, generando métricas y trazas que permitan detectar fallos y cuellos de botella.
+	
+	\item \textbf{Documentación completa}: Registro detallado de cada paso, configuración y script utilizado, así como instrucciones claras para replicar el sistema, asegurando que otros equipos puedan utilizar esta solución de forma sencilla.
+	
+	\item \textbf{Posible extensión}: Aunque la infraestructura se desplegará en un entorno local para esta fase, se dejará preparada la posibilidad de usar Terraform para definir y desplegar infraestructura en entornos cloud en trabajos futuros.
+\end{enumerate}
+
+
+Esta metodología seguirá un enfoque iterativo y ágil, permitiendo ajustes continuos basados en resultados parciales y feedback.

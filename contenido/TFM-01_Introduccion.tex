@@ -1,0 +1,42 @@
+\chapter{Introducción}\label{chap:introduccion}
+En la actualidad, las arquitecturas basadas en microservicios se han convertido en una solución ampliamente adoptada por su escalabilidad, flexibilidad y facilidad de mantenimiento. Sin embargo, este enfoque también introduce nuevos desafíos, especialmente en lo que respecta a la observación y diagnóstico del comportamiento del sistema. La naturaleza distribuida y dinámica de los microservicios dificulta la detección de fallos, el análisis de cuellos de botella y el rastreo de errores a lo largo de múltiples servicios.
+
+En este contexto, surge la necesidad de implementar una solución de observabilidad integral que permita monitorear el estado del sistema, registrar y analizar logs en tiempo real, y realizar trazabilidad distribuida de las solicitudes. Este trabajo de tesis propone una solución basada en herramientas ampliamente utilizadas en el ecosistema DevOps, integradas y automatizadas dentro de un entorno simulado de producción con contenedores y orquestación.
+
+La propuesta incluye el diseño de una arquitectura simple de microservicios usando Spring Boot, la integración de herramientas como Prometheus y Grafana para el monitoreo, ELK Stack para logging, y Jaeger con OpenTelemetry para la trazabilidad. Todo ello será desplegado y gestionado mediante Docker y Kubernetes, utilizando herramientas de automatización como Helm y Ansible para garantizar la reproducibilidad y escalabilidad del sistema. El objetivo principal es demostrar la utilidad y eficacia de un sistema de observabilidad bien implementado, facilitando el mantenimiento y la mejora continua del software en entornos complejos y distribuidos.
+
+A continuación, se detallan los elementos clave que sustentan este trabajo.
+
+
+
+  %%%
+% Document structure   %
+%%%                  %%%
+\section{Justificación del trabajo}\label{sec:justificaciontrabajo}
+El creciente uso de microservicios en sistemas productivos ha generado una necesidad crítica: contar con visibilidad completa del comportamiento del sistema para garantizar su correcta operación y rápida resolución de incidentes. En arquitecturas monolíticas, herramientas básicas de monitoreo y logging eran suficientes. Sin embargo, en entornos distribuidos, donde múltiples servicios interactúan de forma simultánea, se vuelve indispensable contar con un sistema de observabilidad que integre monitoring, logging y tracing.
+
+La motivación principal de este trabajo radica en brindar una solución práctica, automatizada y replicable que ayude a equipos DevOps a enfrentar este desafío. A pesar de la existencia de herramientas maduras en el mercado, su integración coherente dentro de una arquitectura realista y su despliegue eficiente en entornos productivos sigue siendo un reto técnico importante.
+
+Además, al utilizar herramientas open source y ampliamente adoptadas, se facilita su implementación en proyectos reales sin incurrir en altos costos, lo cual también aporta valor desde una perspectiva académica y profesional.
+
+\section{Planteamiento del problema}\label{sec:planteamiento_problema}
+La complejidad inherente a los sistemas de microservicios dificulta la detección temprana de errores, la localización de cuellos de botella y la trazabilidad de peticiones que atraviesan múltiples componentes. Las soluciones tradicionales de monitoreo, centradas en métricas básicas y sin correlación entre logs y trazas, resultan insuficientes para brindar la visibilidad requerida.
+
+Además, la falta de automatización en la implementación de estas herramientas puede llevar a configuraciones ineficientes, difíciles de mantener y poco escalables.
+
+Por tanto, se plantea como problema principal la falta de una solución de observabilidad integrada y automatizada que pueda adaptarse a arquitecturas modernas basadas en microservicios, ofreciendo visibilidad completa y en tiempo real del estado del sistema.
+
+\section{Estructura de la memoria}\label{sec:estructura}
+El objetivo general de esta tesis es diseñar e implementar una solución integral de observabilidad para arquitecturas de microservicios, integrando herramientas de monitoreo, logging y trazabilidad distribuida, y automatizando su despliegue mediante tecnologías DevOps. 
+
+\section{Contribución esperada}\label{sec:estructura}
+Como contribución principal, se espera desarrollar una plataforma base que pueda ser utilizada como referencia por equipos DevOps para implementar observabilidad en sus sistemas. Esta plataforma incluirá:
+
+\begin{itemize}
+  \item Un entorno reproducible con microservicios desplegados en Kubernetes.
+  \item Dashboards personalizados, alertas configuradas y trazabilidad integrada.
+  \item Guías de implementación y documentación técnica.
+  \item Evaluación del sistema para comprobar su eficacia en la detección y diagnóstico de fallos.
+\end{itemize}
+
+La propuesta también busca demostrar que, mediante la automatización y el uso de herramientas adecuadas, es posible mejorar significativamente la calidad del software y reducir el tiempo de respuesta ante incidentes.
