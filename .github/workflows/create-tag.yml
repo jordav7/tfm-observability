@@ -1,0 +1,25 @@
+name: Crear nuevo tag de release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Número de versión release ejemplo v1.0.0"
+        required: true
+        default: "v1.0.0"
+jobs:
+  create_tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@4
+
+      - name: Configurar git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+      - name: Crear y subir tag
+        run: |
+          git tag ${{ github.event.inputs.release_version }}
+          git push origin ${{ github.event.inputs.release_version }}
