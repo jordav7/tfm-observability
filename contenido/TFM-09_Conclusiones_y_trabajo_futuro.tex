@@ -1,11 +1,27 @@
 \chapter{Conclusiones y trabajo futuro}\label{chap:resultados}
-Este último bloque (habitualmente un capítulo; en ocasiones, dos capítulos complementarios) es habitual en todos los tipos de trabajos y presenta el resumen final de tu trabajo y debe servir para informar del alcance y relevancia de tu aportación.\par
 
-Suele estructurarse empezando con un resumen del problema tratado, de cómo se ha abordado y de por qué la solución sería válida.
-Es recomendable que incluya también un resumen de las contribuciones del trabajo, en el que relaciones las contribuciones y los resultados obtenidos con los objetivos que habías planteado para el trabajo, discutiendo hasta qué punto has conseguido resolver los objetivos planteados.\par
+\section{Conclusiones}
 
-Finalmente, se suele dedicar una última sección a hablar de líneas de trabajo futuro que podrían aportar valor añadido al TFM realizado. La sección debería señalar las perspectivas de futuro que abre el trabajo desarrollado para el campo de estudio definido. En el fondo, debes justificar de qué modo puede emplearse la aportación que has desarrollado y en qué campos.
-\section{Conclusiones}\label{sec:conclusiones}
-cosas
-\section{Lineas de trabajo futuro}\label{sec:trabajofuturo}
-cosas
+Este estudio se ocupó del desafío de establecer una arquitectura de monitoreo para sistemas que emplean microservicios, centrándose en cómo reunir y representar métricas, trazas y registros mediante tecnologías de código abierto como OpenTelemetry, Prometheus y Grafana. Para probar la solución, configuramos un entorno local usando Kubernetes (Minikube), lo que nos permitió integrar y evaluar los elementos esenciales para el monitoreo y análisis del sistema.
+
+A lo largo del proceso, diseñamos la arquitectura, equipamos los microservicios con el SDK de OpenTelemetry y ajustamos los componentes de monitoreo, incluyendo el OpenTelemetry Collector, Prometheus y Grafana. El resultado fue un entorno operativo que proporciona visibilidad en tiempo real sobre el rendimiento y rastreo del sistema, lo que ayuda en la identificación de cuellos de botella o fallas potenciales.
+
+Los objetivos establecidos inicialmente, como construir un entorno reproducible para el monitoreo y demostrar su efectividad en local, se lograron con éxito. Además, la solución es lo suficientemente adaptable para futuras expansiones, tales como la migración a entornos en la nube o la automatización de procesos utilizando herramientas como Terraform y Kubernetes.
+
+\section{Líneas de trabajo futuro}
+
+A pesar de que el entorno actual satisface las expectativas, existen diversas áreas donde se puede continuar avanzando para incrementar el valor del proyecto:
+
+\begin{itemize}
+	\item \textbf{Implementación en la nube:} Automatizar la infraestructura en plataformas de nube pública utilizando Terraform y Kubernetes administrados, asegurando así escalabilidad y disponibilidad elevada.
+	
+	\item \textbf{Automatización avanzada:} Integrar pipelines de CI/CD que incluyan pruebas automatizadas, implementación y monitoreo, así optimizando la eficiencia del ciclo de desarrollo.
+	
+	\item \textbf{Seguridad y cumplimiento:} Establecer medidas de seguridad para el monitoreo, como el cifrado de datos tanto en tránsito como en reposo, además de controlar el acceso a paneles de control y datos sensibles.
+	
+	\item \textbf{Análisis avanzado:} Incorporar sistemas de análisis predictivo y alertas basadas en aprendizaje automático para prever fallos o deterioro del sistema.
+	
+	\item \textbf{Documentación y capacitación:} Preparar documentación detallada y recursos educativos para facilitar la adaptación por parte de los equipos de desarrollo y operaciones.
+\end{itemize}
+
+Estas líneas abren la oportunidad para una evolución natural de la plataforma de monitoreo, consolidando y ampliando el valor del trabajo realizado en este TFM.

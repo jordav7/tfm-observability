@@ -14,7 +14,7 @@ Para lograr el objetivo general, se plantean los siguientes objetivos específic
 	
 	\item Diseñar y desplegar una arquitectura de microservicios con Spring Boot que permita la integración de las herramientas de observabilidad.
 	
-	\item Implementar la automatización del despliegue utilizando Docker y Kubernetes, inicialmente sobre un entorno local (Minikube), con la posibilidad de ampliar la infraestructura mediante Terraform en futuras fases.
+	\item Implementar la automatización del despliegue utilizando Docker y Kubernetes, inicialmente sobre un entorno local (Minikube), con la opción de evaluar la incorporación de Terraform para la gestión de infraestructura en caso de ser necesario.
 	
 	\item Configurar el despliegue automatizado de las herramientas de observabilidad usando Helm y Ansible para facilitar la reproducibilidad y mantenimiento.
 	
@@ -22,6 +22,9 @@ Para lograr el objetivo general, se plantean los siguientes objetivos específic
 	
 	\item Documentar exhaustivamente el proceso, incluyendo la configuración detallada de las herramientas, scripts de automatización y guías para replicar el entorno en otros contextos.
 \end{itemize}
+
+Cabe destacar que la selección de las herramientas utilizadas para cada uno de los pilares de la observabilidad (monitorización, logging y trazabilidad) ha sido detalladamente justificada en la Sección~\ref{sec:justificacion-eleccion-herramientas}. Dicha elección constituye la base sobre la cual se diseñará e implementará la solución propuesta en este trabajo, asegurando coherencia con los objetivos planteados y viabilidad técnica en entornos reales.
+
 
 \section{Metodología del trabajo}\label{sec:metodologia_trabajo}
 Para alcanzar los objetivos planteados, se seguirá la siguiente metodología:
@@ -39,7 +42,7 @@ Para alcanzar los objetivos planteados, se seguirá la siguiente metodología:
 	
 	\item \textbf{Documentación completa}: Registro detallado de cada paso, configuración y script utilizado, así como instrucciones claras para replicar el sistema, asegurando que otros equipos puedan utilizar esta solución de forma sencilla.
 	
-	\item \textbf{Posible extensión}: Aunque la infraestructura se desplegará en un entorno local para esta fase, se dejará preparada la posibilidad de usar Terraform para definir y desplegar infraestructura en entornos cloud en trabajos futuros.
+	\item\textbf{Posible extensión:} El despliegue se realizará sobre un entorno local, manteniendo abierta la opción de incorporar Terraform para la provisión automatizada de infraestructura en la nube, según se requiera.
 \end{enumerate}
 
 

@@ -56,3 +56,68 @@ El estudio del estado del arte permite identificar las siguientes conclusiones c
 \end{itemize}
 
 En base a estas averiguaciones, se justifica plenamente el desarrollo de la solución propuesta, que aspira a cubrir una necesidad real y no del todo resuelta en el contexto actual de DevOps y microservicios.
+
+\section{Selección y análisis de herramientas de observabilidad}\label{sec:justificacion-eleccion-herramientas}
+
+La implementación de un sistema de observabilidad eficaz en entornos distribuidos requiere una cuidadosa elección de herramientas que cubran los tres pilares fundamentales: monitoreo, logging y trazabilidad. Esta selección debe considerar criterios técnicos como la compatibilidad con microservicios y contenedores, la integración con Kubernetes, el soporte de la comunidad, la escalabilidad, el coste y la facilidad de automatización.
+
+En esta sección se detallan las herramientas seleccionadas para este Trabajo Fin de Máster, justificando su elección frente a otras alternativas existentes en el ecosistema DevOps, y resaltando sus ventajas en el contexto de una solución integral, reproducible y automatizada.
+
+\subsection*{Prometheus y Grafana (Monitoreo de métricas)}
+
+\textbf{Prometheus} ha sido seleccionado como sistema principal de recopilación y almacenamiento de métricas por su integración nativa con \textbf{Kubernetes}, soporte para múltiples exporters, y su modelo de datos optimizado para series temporales. Desarrollado inicialmente por SoundCloud y actualmente parte de la \textit{Cloud Native Computing Foundation (CNCF)}, Prometheus se ha convertido en un estándar de facto para el monitoreo en entornos cloud-native.
+
+\textbf{Grafana}, por su parte, permite la visualización avanzada y en tiempo real de las métricas recolectadas por Prometheus. Su interfaz intuitiva, capacidad de integración con múltiples fuentes de datos, y soporte para alertas personalizadas la convierten en la opción ideal para construir dashboards operativos y de negocio.
+
+Se descartaron otras soluciones como Zabbix o Nagios por su enfoque más tradicional y menor capacidad de integración con ecosistemas modernos basados en contenedores.
+
+\subsection*{ELK Stack: Elasticsearch, Logstash y Kibana (Logging centralizado)}
+
+El stack \textbf{ELK} (Elasticsearch, Logstash y Kibana) ha sido elegido para la gestión centralizada de logs debido a su madurez, escalabilidad y amplio uso en la industria. \textbf{Elasticsearch} proporciona un motor de búsqueda distribuido y altamente eficiente; \textbf{Logstash} facilita la ingestión y transformación de datos; y \textbf{Kibana} permite la exploración visual de logs mediante dashboards interactivos.
+
+Esta solución permite correlacionar eventos entre microservicios, facilitando el análisis forense de fallos, detección de patrones anómalos y generación de alertas basadas en logs. Frente a otras herramientas como Fluentd o Graylog, ELK ofrece una solución más completa e integrada, con una comunidad más amplia y documentación extensa.
+
+Además, la adopción de herramientas open source evita dependencias con soluciones propietarias como Splunk o Datadog, las cuales, si bien potentes, implican costes significativos y menor control sobre la infraestructura.
+
+\subsection*{Jaeger y OpenTelemetry (Trazabilidad distribuida)}
+
+Para implementar la trazabilidad distribuida se ha optado por \textbf{Jaeger}, también respaldado por la CNCF, por su compatibilidad con múltiples lenguajes, escalabilidad y facilidad de integración con aplicaciones basadas en Spring Boot y Kubernetes. Jaeger permite rastrear peticiones a lo largo de varios microservicios, identificar cuellos de botella y analizar la latencia de extremo a extremo.
+
+Complementariamente, se ha integrado \textbf{OpenTelemetry}, un proyecto conjunto de la CNCF y otras entidades que busca estandarizar la recolección de datos de observabilidad (trazas, métricas y logs) mediante un conjunto unificado de APIs y SDKs. OpenTelemetry garantiza la interoperabilidad entre distintas herramientas y facilita la instrumentación de código sin depender de un proveedor específico.
+
+Esta combinación se consideró superior frente a otras alternativas como Zipkin, dado que Jaeger ofrece mejor escalabilidad, interfaz más moderna y soporte oficial por parte de grandes actores del ecosistema cloud-native como Uber, Red Hat y Google.
+
+\subsection*{Docker y Kubernetes (Contenerización y orquestación)}
+
+La plataforma se construye sobre \textbf{Docker} para la contenerización de aplicaciones, permitiendo empaquetar cada microservicio con sus dependencias. Para la orquestación se utiliza \textbf{Kubernetes}, actualmente el estándar más adoptado para el despliegue, escalado y gestión de aplicaciones contenerizadas.
+
+La elección de Kubernetes permite simular un entorno de producción realista, altamente dinámico, y compatible con herramientas de observabilidad modernas como Prometheus y Jaeger, que cuentan con exporters, operadores o sidecars específicos para este entorno.
+
+\subsection*{Helm y Ansible (Automatización del despliegue)}
+
+\textbf{Helm} ha sido elegido como gestor de paquetes para Kubernetes, ya que permite empaquetar, versionar y desplegar de forma declarativa las herramientas y microservicios. Facilita la reutilización de configuraciones y la gestión de entornos mediante charts personalizables.
+
+\textbf{Ansible} se utiliza para automatizar tareas de configuración fuera del clúster Kubernetes, como la preparación de entornos locales o la instalación de requisitos previos. Su sintaxis basada en YAML, su enfoque declarativo y su amplia adopción en el mundo DevOps lo convierten en una herramienta adecuada para asegurar la reproducibilidad de los despliegues.
+
+A modo de resumen, la siguiente tabla compara las herramientas seleccionadas frente a otras alternativas comunes, indicando los motivos técnicos y estratégicos que respaldan su elección.
+
+\begin{table}[H]
+	\centering
+	\caption{Comparativa de herramientas de observabilidad y justificación de elección}
+	\begin{tabularx}{14.5cm}{|L{0.18}|L{0.22}|L{0.22}|L{0.35}|}
+		\hline
+		\textbf{Pilar de observabilidad} & \textbf{Herramienta seleccionada} & \textbf{Alternativas consideradas} & \textbf{Justificación de la elección} \\ \hline
+		
+		Monitoreo de métricas & Prometheus + Grafana & Zabbix, Nagios, Datadog (SaaS) & Integración nativa con Kubernetes, modelo de datos optimizado para métricas, soporte comunitario activo, visualización avanzada con Grafana. \\ \hline
+		
+		Logging centralizado & ELK Stack (Elasticsearch, Logstash, Kibana) & Fluentd, Graylog, Splunk (SaaS) & Solución open source madura, escalable, ampliamente adoptada en la industria, visualización potente y flexible, sin costes de licencia. \\ \hline
+		
+		Trazabilidad distribuida & Jaeger + OpenTelemetry & Zipkin, New Relic (SaaS), Lightstep & Soporte CNCF, integración con Spring Boot y Kubernetes, interoperabilidad con múltiples backends, trazabilidad de extremo a extremo, estándar emergente con OpenTelemetry. \\ \hline
+		
+		Contenerización y orquestación & Docker + Kubernetes & Docker Swarm, Podman, OpenShift & Kubernetes es el estándar en orquestación; Docker es la base de la contenerización; compatibilidad total con herramientas de observabilidad modernas. \\ \hline
+		
+		Automatización del despliegue & Helm + Ansible & Terraform (infraestructura), Kustomize & Helm permite empaquetado y despliegue declarativo en Kubernetes; Ansible facilita tareas fuera del clúster y es ampliamente utilizado en DevOps. \\ \hline
+		
+	\end{tabularx}
+	\label{tab:comparativa_herramientas_observabilidad}
+\end{table}
