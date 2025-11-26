@@ -42,8 +42,137 @@ Para alcanzar los objetivos planteados, se seguirá la siguiente metodología:
 	
 	\item \textbf{Documentación completa}: Registro detallado de cada paso, configuración y script utilizado, así como instrucciones claras para replicar el sistema, asegurando que otros equipos puedan utilizar esta solución de forma sencilla.
 	
-	\item\textbf{Posible extensión:} El despliegue se realizará sobre un entorno local, manteniendo abierta la opción de incorporar Terraform para la provisión automatizada de infraestructura en la nube, según se requiera.
+	\item \textbf{Posible extensión}: El despliegue se realizará sobre un entorno local, manteniendo abierta la opción de incorporar Terraform para la provisión automatizada de infraestructura en la nube, según se requiera.
 \end{enumerate}
 
+Esta metodología seguirá un enfoque iterativo y ágil, permitiendo ajustes continuos basados en resultados parciales y feedback, asegurando la mejora progresiva de la plataforma.
 
-Esta metodología seguirá un enfoque iterativo y ágil, permitiendo ajustes continuos basados en resultados parciales y feedback.
+\subsection{Implementación y despliegue inicial}\label{sec:implementacion_despliegue}
+
+La fase de implementación y despliegue inicial constituye un momento crítico en el desarrollo de la plataforma de observabilidad. Su objetivo principal es garantizar que todos los microservicios y herramientas seleccionadas funcionen de manera coordinada en un entorno controlado y reproducible. Esta fase se centra en tres ejes principales: contenerización, despliegue en Kubernetes y validación inicial de la integración de observabilidad.
+
+\paragraph{Contenerización de microservicios y herramientas}
+
+El primer paso consiste en empaquetar cada microservicio y componente de observabilidad dentro de contenedores Docker. Este enfoque permite encapsular todas las dependencias, librerías y configuraciones necesarias para su ejecución, asegurando que cada servicio sea independiente y portátil. Entre las buenas prácticas adoptadas se incluyen:
+
+\begin{itemize}
+	\item Creación de \texttt{Dockerfile} optimizados, minimizando el tamaño de las imágenes mediante el uso de imágenes base ligeras como \texttt{openjdk:17-jdk-slim} para aplicaciones Spring Boot.
+	\item Separación de capas de construcción y ejecución para reducir tiempos de despliegue y mejorar la cacheabilidad de las imágenes.
+	\item Gestión de variables de entorno y secretos mediante archivos \texttt{.env} y soporte para Kubernetes Secrets.
+\end{itemize}
+
+Los servicios contemplados incluyen aplicaciones de ejemplo basadas en Spring Boot, bases de datos ligeras como PostgreSQL, y herramientas de observabilidad como Prometheus, Grafana, Elasticsearch y Jaeger.
+
+\paragraph{Despliegue en Kubernetes (Minikube)}
+
+Una vez contenerizados, los servicios se despliegan sobre un clúster Kubernetes, utilizando Minikube como entorno de desarrollo local. Este despliegue permite simular un entorno de producción y evaluar la interacción entre microservicios, facilitando la identificación de problemas de comunicación, rendimiento o integración. Las acciones principales incluyen:
+
+\begin{itemize}
+	\item Creación de \texttt{Namespaces} específicos para cada grupo de servicios, asegurando aislamiento y facilidad de gestión.
+	\item Definición de \texttt{Deployments} y \texttt{Services} para cada contenedor, estableciendo estrategias de escalado, réplicas y puertos expuestos.
+	\item Configuración de volúmenes persistentes para bases de datos y logs, garantizando la durabilidad de los datos durante reinicios o actualizaciones.
+\end{itemize}
+
+\paragraph{Integración inicial de observabilidad}
+
+Con el clúster en funcionamiento, se procede a la integración de los componentes de observabilidad:
+
+\begin{itemize}
+	\item Prometheus se configura para recolectar métricas de cada microservicio mediante \textit{exporters} específicos y endpoints \texttt{/metrics}.
+	\item Grafana se conecta a Prometheus como fuente de datos, permitiendo la creación de dashboards iniciales para visualizar métricas clave como CPU, memoria, latencia de peticiones y tasas de error.
+	\item ELK Stack (Elasticsearch, Logstash y Kibana) se despliega para centralizar logs generados por los microservicios, con configuraciones de \textit{logstash pipelines} y patrones de indexación en Elasticsearch.
+	\item Jaeger y OpenTelemetry se integran para instrumentar los microservicios, habilitando trazas distribuidas de extremo a extremo que permiten seguir el flujo de peticiones entre servicios.
+\end{itemize}
+
+\paragraph{Validación de integración}
+
+Tras el despliegue inicial, se realizan pruebas de validación para asegurar la correcta recolección y visualización de datos de observabilidad. Estas pruebas incluyen:
+
+\begin{itemize}
+	\item Generación de tráfico simulado mediante herramientas como JMeter o locust.io para evaluar métricas de rendimiento y latencia.
+	\item Inserción de logs con distintos niveles (\textit{info, warning, error}) para verificar la indexación y búsqueda en ELK Stack.
+	\item Trazabilidad de peticiones a través de múltiples servicios, asegurando que Jaeger capture correctamente los spans y tiempos de respuesta.
+\end{itemize}
+
+\paragraph{Documentación y control de versiones}
+
+Durante toda esta fase, se mantiene un control estricto mediante GitHub, registrando:
+
+\begin{itemize}
+	\item Dockerfiles y configuraciones de contenedores.
+	\item Archivos de despliegue en Kubernetes (\texttt{YAML} de deployments y services).
+	\item Scripts de prueba y validación.
+\end{itemize}
+
+Esta documentación asegura trazabilidad, reproducibilidad y facilidad de mantenimiento en fases posteriores.
+
+\paragraph{Reflexión metodológica}
+
+La implementación y despliegue inicial permiten identificar problemas tempranos, validar supuestos de arquitectura y preparar el terreno para la automatización completa. Además, sirven como base para ajustes iterativos, permitiendo la optimización del rendimiento y la integración con fases posteriores de automatización y pruebas exhaustivas.
+
+\subsection{Automatización con Helm y Ansible}\label{sec:automatizacion_helm_ansible}
+
+La fase de automatización constituye un componente crítico para garantizar la reproducibilidad, escalabilidad y mantenimiento eficiente de la plataforma de observabilidad. Se centra en reducir la intervención manual, minimizar errores humanos y permitir despliegues consistentes en distintos entornos, siguiendo las buenas prácticas de DevOps.
+
+\paragraph{Automatización mediante Helm}
+
+Helm es un gestor de paquetes para Kubernetes que facilita la creación, versionado y despliegue de aplicaciones complejas mediante \textit{charts}. La utilización de Helm en este proyecto incluye:
+
+\begin{itemize}
+	\item Creación de charts personalizados para cada herramienta de observabilidad, incluyendo Prometheus, Grafana, ELK Stack y Jaeger.
+	\item Definición de plantillas (\texttt{templates}) para deployments, services, configmaps y secrets, permitiendo parametrización y reutilización en distintos entornos.
+	\item Gestión de versiones de los charts para mantener consistencia y permitir retrocesos (\textit{rollbacks}) en caso de problemas.
+	\item Integración de valores de configuración (\texttt{values.yaml}) para personalizar despliegues según entorno (desarrollo, prueba, producción) sin modificar plantillas.
+\end{itemize}
+
+El uso de Helm permite que cualquier miembro del equipo despliegue la plataforma completa con un único comando, asegurando uniformidad y simplificando las actualizaciones de los servicios.
+
+\paragraph{Automatización con Ansible}
+
+Ansible se utiliza para tareas de configuración y gestión fuera del clúster Kubernetes, incluyendo:
+
+\begin{itemize}
+	\item Preparación del entorno local o servidores remotos para ejecutar Minikube o Kubernetes.
+	\item Instalación de dependencias necesarias, como Docker, kubectl o herramientas de monitoreo.
+	\item Configuración de archivos de entorno y secretos sensibles, garantizando consistencia y seguridad.
+	\item Ejecución de scripts de validación post-despliegue para comprobar la conectividad entre servicios y la correcta recolección de métricas, logs y trazas.
+\end{itemize}
+
+Los playbooks de Ansible se escriben en YAML y se estructuran de forma modular, permitiendo reutilización de tareas y escalabilidad hacia entornos más grandes o en la nube.
+
+\paragraph{Integración CI/CD}
+
+La automatización se complementa con pipelines de integración continua y despliegue continuo (CI/CD) mediante GitHub Actions. Esto permite:
+
+\begin{itemize}
+	\item Construir automáticamente las imágenes Docker al hacer cambios en el repositorio.
+	\item Desplegar automáticamente los microservicios y herramientas de observabilidad en Minikube.
+	\item Ejecutar pruebas automáticas de funcionalidad, rendimiento y trazabilidad.
+	\item Generar reportes de métricas y logs de manera sistemática, manteniendo un historial de despliegues y cambios.
+\end{itemize}
+
+\paragraph{Beneficios de la automatización}
+
+La combinación de Helm y Ansible aporta múltiples ventajas:
+
+\begin{itemize}
+	\item \textbf{Reproducibilidad}: cualquier entorno puede ser replicado de manera idéntica.
+	\item \textbf{Escalabilidad}: permite añadir nuevos servicios o herramientas sin afectar al resto de la plataforma.
+	\item \textbf{Seguridad}: gestión centralizada de secretos y variables sensibles.
+	\item \textbf{Reducción de errores humanos}: minimiza tareas manuales y repetitivas.
+	\item \textbf{Documentación viva}: los playbooks y charts actúan como documentación operativa de la plataforma.
+\end{itemize}
+
+\paragraph{Pruebas de automatización}
+
+Se realizarán pruebas iterativas para garantizar la efectividad de los scripts:
+
+\begin{itemize}
+	\item Despliegues incrementales: desplegar componentes individuales para verificar su correcto funcionamiento.
+	\item Despliegue completo: asegurar que toda la plataforma puede iniciarse desde cero en un único paso.
+	\item Simulación de fallos: probar retrocesos y actualizaciones automáticas de servicios mediante Helm y Ansible.
+\end{itemize}
+
+\paragraph{Reflexión metodológica}
+
+La automatización garantiza que el sistema pueda evolucionar con rapidez, incorporar nuevas herramientas y adaptarse a diferentes entornos sin comprometer la consistencia ni la calidad. Además, sienta las bases para una posible extensión hacia entornos cloud y despliegues distribuidos geográficamente, reforzando la escalabilidad y resiliencia del sistema.
