@@ -45,10 +45,10 @@ Este enfoque proporciona una justificación técnica clara para la elección de 
 Se eligieron herramientas maduras, con buena documentación y soporte comunitario, que permitieran un despliegue ágil y funcional:
 
 \begin{itemize}
-    \item \textbf{Prometheus}: captura de métricas de servicios y componentes, con compatibilidad con endpoints estándar de instrumentación.
-    \item \textbf{Grafana}: visualización de métricas mediante dashboards configurables que permiten un seguimiento sencillo de la actividad de los servicios.
-    \item \textbf{Jaeger y OpenTelemetry}: trazabilidad distribuida de solicitudes, lo que facilita comprender cómo las peticiones fluyen a través de los servicios.
-    \item \textbf{Docker y Minikube}: contenerización y simulación de un clúster local de Kubernetes, permitiendo reproducir el entorno en cualquier máquina de desarrollo.
+    \item \textbf{Prometheus:} captura de métricas de servicios y componentes, con compatibilidad con endpoints estándar de instrumentación.
+    \item \textbf{Grafana:} visualización de métricas mediante dashboards configurables que permiten un seguimiento sencillo de la actividad de los servicios.
+    \item \textbf{Jaeger y OpenTelemetry:} trazabilidad distribuida de solicitudes, lo que facilita comprender cómo las peticiones fluyen a través de los servicios.
+    \item \textbf{Docker y Minikube:} contenerización y simulación de un clúster local de Kubernetes, permitiendo reproducir el entorno en cualquier máquina de desarrollo.
 \end{itemize}
 
 Se decidió dejar fuera ELK Stack en esta primera versión para reducir la complejidad, dejando abierta su integración en fases posteriores.
@@ -93,8 +93,6 @@ Los subapartados 4.2.1 a 4.2.3 detallan de manera progresiva:
 	\item 4.2.2 Implementación detallada: contenerización, despliegue, instrumentación y configuración de Prometheus, Grafana y Jaeger.
 	\item 4.2.3 Metodología de desarrollo: enfoque iterativo, control de versiones y documentación progresiva.
 \end{itemize}
-
-Esta introducción permite situar al lector antes de entrar en los detalles técnicos de cada subapartado, garantizando una comprensión clara de la organización del desarrollo.
 
 \subsection{Arquitectura y diseño}
 
@@ -170,7 +168,6 @@ La instrumentación se realiza de forma transparente mediante el agente de OpenT
 \subsection{Despliegue de componentes de observabilidad}
 
 \paragraph{Jaeger}
-
 \begin{verbatim}
 apiVersion: apps/v1
 kind: Deployment
@@ -208,7 +205,6 @@ spec:
 \end{verbatim}
 
 \paragraph{Prometheus}
-
 \begin{verbatim}
 apiVersion: v1
 kind: ConfigMap
@@ -263,7 +259,6 @@ spec:
 \end{verbatim}
 
 \paragraph{Grafana}
-
 \begin{verbatim}
 apiVersion: apps/v1
 kind: Deployment
@@ -357,31 +352,35 @@ Asimismo, Jaeger mostró de forma gráfica las trazas distribuidas correspondien
     \label{fig:jaeger-trazas}
 \end{figure}
 
-\subsection{Usabilidad y aplicabilidad}
+\subsection{Pruebas de usabilidad y aplicabilidad}
 
-El prototipo permitió validar la viabilidad de una plataforma de observabilidad integrada en un entorno de microservicios. Prometheus recolectó métricas expuestas por los servicios a través del endpoint \texttt{/actuator/prometheus}, permitiendo analizar información relevante como número de peticiones, tiempos de respuesta y consumo básico de recursos.
+Para evaluar la aplicabilidad del prototipo en contextos reales de desarrollo de microservicios, se realizó un análisis cualitativo basado en los siguientes criterios:
 
-Estas métricas fueron visualizadas en Grafana mediante dashboards configurables, facilitando el seguimiento del comportamiento de los microservicios en tiempo real y ofreciendo una visión consolidada del estado del sistema.
+\begin{itemize}
+    \item \textbf{Facilidad de despliegue:} El prototipo puede ejecutarse en cualquier máquina local con recursos limitados, gracias a Minikube y Docker.
+    \item \textbf{Claridad de visualización:} Los dashboards de Grafana y las trazas de Jaeger permiten comprender de manera intuitiva el comportamiento de los microservicios.
+    \item \textbf{Replicabilidad:} La documentación y scripts incluidos facilitan la replicación del entorno por parte de otros desarrolladores, permitiendo pruebas y experimentación sin riesgo sobre entornos productivos.
+    \item \textbf{Instrumentación estandarizada:} OpenTelemetry permite una integración homogénea de métricas y trazabilidad, independiente del lenguaje de programación o framework utilizado.
+\end{itemize}
 
-Adicionalmente, Jaeger permitió visualizar trazas distribuidas completas, mostrando la secuencia de llamadas entre los distintos microservicios y los tiempos asociados a cada tramo de la petición. Esto confirmó que la instrumentación con OpenTelemetry funcionó de forma correcta y transparente, sin necesidad de realizar cambios significativos en el código de los servicios.
-
-En conjunto, la plataforma demostró ser sencilla de utilizar, fácilmente replicable y adecuada como base para el estudio y comprensión de la observabilidad en arquitecturas de microservicios. Este enfoque facilita la replicación, el aprendizaje y la comprensión práctica de la observabilidad en arquitecturas de microservicios.
+Como resultado, se confirma que el prototipo no solo cumple con los requisitos funcionales, sino que también puede servir como entorno educativo o de prueba para equipos de desarrollo que desean experimentar con observabilidad distribuida sin complejidad excesiva.
 
 \subsection{Limitaciones y futuras mejoras}
 
-\textbf{Limitaciones actuales:}
+Aunque el prototipo proporciona una base sólida para la observabilidad de microservicios, se identificaron algunas limitaciones:
+
 \begin{itemize}
-    \item Alcance limitado a un prototipo local y microservicios simples.
-    \item Funcionalidad de observabilidad básica, sin integración de alertas ni logs centralizados.
+    \item \textbf{Entorno limitado:} Al ejecutarse en Minikube, no refleja completamente la complejidad de un clúster de producción con múltiples nodos y balanceo de carga avanzado.
+    \item \textbf{Escalabilidad restringida:} La prueba se realizó con un número reducido de microservicios y tráfico simulado; escenarios con mayor concurrencia podrían requerir ajustes.
+    \item \textbf{Integración parcial de logs:} La solución actual se centra en métricas y trazabilidad; la integración completa de logs centralizados (por ejemplo con ELK Stack) queda pendiente.
+    \item \textbf{Alertas automáticas:} No se configuraron alertas automáticas; esto podría implementarse en futuras versiones mediante Prometheus Alertmanager.
 \end{itemize}
 
-\textbf{Futuras mejoras:}
-\begin{itemize}
-    \item Integración de ELK Stack para gestión de logs centralizada.
-    \item Automatización avanzada de despliegue con Helm y Ansible.
-    \item Escalabilidad hacia entornos de nube o multi-nube.
-    \item Creación de dashboards más completos con métricas personalizadas.
-\end{itemize}
+Estas limitaciones ofrecen oportunidades para la expansión del prototipo, incluyendo:
 
-Este enfoque facilita la replicación, el aprendizaje y la comprensión práctica de la observabi-
-lidad en arquitecturas de microservicios.
+\begin{itemize}
+    \item Integración de un sistema de alertas.
+    \item Adición de más microservicios y pruebas de escalabilidad.
+    \item Extensión de dashboards y métricas personalizadas.
+    \item Instrumentación de logs centralizados.
+\end{itemize}
