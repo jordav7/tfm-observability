@@ -8,7 +8,7 @@
 \RequirePackage[T1]{fontenc}
 
 % Bibliografía (no establecido por UNIR, cosecha propia)
-\usepackage[bibencoding=utf8,maxcitenames=1,backend=biber,bibstyle=authoryear,citestyle=apa,sorting=ynt]{biblatex}
+\usepackage[bibencoding=utf8,maxcitenames=1,backend=biber,bibstyle=authoryear,citestyle=apa,sorting=ynt,sorting=nyt]{biblatex}
 \addbibresource[location=local]{contenido/TFM-biblio.bib}
 %\AtEveryBibitem{[\printfield{labelnumber}]\addspace}
 % \cite{xxx} -> (Author, Year)

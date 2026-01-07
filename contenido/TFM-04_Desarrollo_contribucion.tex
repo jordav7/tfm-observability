@@ -1,14 +1,44 @@
 \chapter{Desarrollo específico de la contribución}\label{chap:desarrollo}
 
+Este capítulo describe el desarrollo detallado del prototipo de plataforma de observabilidad para microservicios. Se incluyen la planificación, el análisis de requisitos, la justificación de las tecnologías empleadas, la arquitectura del sistema, la implementación técnica, la instrumentación de los microservicios y la evaluación mediante pruebas funcionales y de usabilidad. 
+
+El capítulo se organiza de la siguiente manera: en el apartado 4.1 se presentan la planificación, el análisis de requisitos y la selección de tecnologías; en 4.2 se detalla la arquitectura del sistema, la implementación de los microservicios y la integración de herramientas de observabilidad; finalmente, en 4.3 se describen las pruebas realizadas, la evaluación de la usabilidad y aplicabilidad del prototipo, y las posibles limitaciones y mejoras futuras.
+
 \section{Planificación, Análisis y Requisitos}
 
-Este capítulo detalla el desarrollo específico del prototipo de plataforma de observabilidad para microservicios. Se presentan los objetivos, la planificación, la elección de tecnologías, la arquitectura y el diseño del sistema, así como la implementación técnica y los resultados obtenidos en pruebas.
+En este apartado se describe el contexto y problema que motivaron el proyecto, la elección de tecnologías, la organización del desarrollo y los requisitos funcionales y no funcionales que guían la construcción del prototipo. Este apartado se divide en los subapartados: 
+\begin{itemize}
+	\item 4.1.1 Contexto y problema.
+	\item 4.1.2 Justificación de tecnologías.
+	\item 4.1.3 Organización del desarrollo.
+	\item 4.1.4 Requisitos funcionales y no funcionales.
+\end{itemize}
 
 \subsection{Contexto y problema}
 
 En arquitecturas de microservicios, uno de los retos más importantes es lograr una observabilidad efectiva. Cada servicio se ejecuta de forma independiente, interactúa con distintos componentes y genera información distribuida que, de no gestionarse correctamente, dificulta la detección de fallos, el diagnóstico y la mejora continua del sistema. La complejidad aumenta cuando se busca correlacionar información entre servicios, identificar patrones de comportamiento o anticipar problemas.
 
 Por este motivo, el objetivo del proyecto fue desarrollar un prototipo de plataforma de observabilidad que integre métricas, logs y trazabilidad de manera sencilla, permitiendo a los desarrolladores y equipos de operaciones tener visibilidad sobre el funcionamiento de los microservicios, sin depender de herramientas complejas ni entornos productivos.
+
+Adicionalmente, la falta de estandarización en la instrumentación de microservicios y la diversidad de frameworks y lenguajes usados en un entorno de producción real generan desafíos concretos:
+
+\begin{itemize}
+    \item \textbf{Visibilidad fragmentada:} los logs y métricas de cada servicio pueden encontrarse en diferentes formatos o ubicaciones, dificultando correlacionar eventos y detectar cuellos de botella.
+    \item \textbf{Trazabilidad de solicitudes:} entender cómo una petición fluye a través de múltiples servicios es complejo, sobre todo cuando se presentan errores intermitentes o latencias variables.
+    \item \textbf{Dificultad para pruebas locales:} replicar un entorno productivo con microservicios interconectados y sus sistemas de observabilidad requiere infraestructura y configuración que no siempre están disponibles para desarrolladores.
+    \item \textbf{Necesidad de decisiones basadas en métricas:} sin métricas consistentes, es difícil evaluar el rendimiento de los servicios, optimizar recursos y tomar decisiones fundamentadas sobre mejoras o escalabilidad.
+\end{itemize}
+
+En este contexto, el prototipo diseñado busca ofrecer una solución replicable y controlada que permita:
+
+\begin{itemize}
+    \item Visualizar el comportamiento de las aplicaciones y detectar fallos de manera temprana.
+    \item Analizar tiempos de respuesta, latencias y carga entre servicios.
+    \item Correlacionar trazas de solicitudes para comprender el flujo completo entre microservicios.
+    \item Servir como base de aprendizaje y experimentación sin requerir un entorno productivo completo.
+\end{itemize}
+
+Este enfoque proporciona una justificación técnica clara para la elección de OpenTelemetry, Prometheus, Grafana y Jaeger, ya que estas herramientas permiten instrumentar los servicios de manera uniforme, recolectar métricas y trazas, y visualizarlas de forma centralizada sin modificar el código fuente.
 
 \subsection{Justificación de tecnologías}
 
@@ -51,6 +81,20 @@ El trabajo se desarrolló de manera individual con planificación semanal, contr
 \end{itemize}
 
 \section{Descripción del sistema desarrollado e implementación}
+
+En esta sección se presenta el desarrollo concreto del prototipo de plataforma de observabilidad, incluyendo la arquitectura diseñada, la contenerización de los microservicios, la instrumentación con OpenTelemetry, el despliegue en Kubernetes y la integración de las herramientas de monitorización y trazabilidad.  
+
+Se describen tanto los aspectos técnicos de implementación como los procedimientos seguidos para asegurar la reproducibilidad del entorno, la recolección de métricas y la visualización de trazas distribuidas. Además, se incluyen ejemplos de configuraciones YAML, capturas de dashboards y referencias a todas las figuras y tablas correspondientes.  
+
+Los subapartados 4.2.1 a 4.2.3 detallan de manera progresiva:
+
+\begin{itemize}
+	\item 4.2.1 Arquitectura y diseño: descripción de los microservicios y componentes de observabilidad.
+	\item 4.2.2 Implementación detallada: contenerización, despliegue, instrumentación y configuración de Prometheus, Grafana y Jaeger.
+	\item 4.2.3 Metodología de desarrollo: enfoque iterativo, control de versiones y documentación progresiva.
+\end{itemize}
+
+Esta introducción permite situar al lector antes de entrar en los detalles técnicos de cada subapartado, garantizando una comprensión clara de la organización del desarrollo.
 
 \subsection{Arquitectura y diseño}
 
