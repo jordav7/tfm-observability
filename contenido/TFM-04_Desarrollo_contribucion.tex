@@ -2,6 +2,8 @@
 
 \section{Planificación, Análisis y Requisitos}
 
+Este capítulo detalla el desarrollo específico del prototipo de plataforma de observabilidad para microservicios. Se presentan los objetivos, la planificación, la elección de tecnologías, la arquitectura y el diseño del sistema, así como la implementación técnica y los resultados obtenidos en pruebas.
+
 \subsection{Contexto y problema}
 
 En arquitecturas de microservicios, uno de los retos más importantes es lograr una observabilidad efectiva. Cada servicio se ejecuta de forma independiente, interactúa con distintos componentes y genera información distribuida que, de no gestionarse correctamente, dificulta la detección de fallos, el diagnóstico y la mejora continua del sistema. La complejidad aumenta cuando se busca correlacionar información entre servicios, identificar patrones de comportamiento o anticipar problemas.
@@ -13,10 +15,10 @@ Por este motivo, el objetivo del proyecto fue desarrollar un prototipo de plataf
 Se eligieron herramientas maduras, con buena documentación y soporte comunitario, que permitieran un despliegue ágil y funcional:
 
 \begin{itemize}
-	\item \textbf{Prometheus}: captura de métricas de servicios y componentes, con compatibilidad con endpoints estándar de instrumentación.
-	\item \textbf{Grafana}: visualización de métricas mediante dashboards configurables que permiten un seguimiento sencillo de la actividad de los servicios.
-	\item \textbf{Jaeger y OpenTelemetry}: trazabilidad distribuida de solicitudes, lo que facilita comprender cómo las peticiones fluyen a través de los servicios.
-	\item \textbf{Docker y Minikube}: contenerización y simulación de un clúster local de Kubernetes, permitiendo reproducir el entorno en cualquier máquina de desarrollo.
+    \item \textbf{Prometheus}: captura de métricas de servicios y componentes, con compatibilidad con endpoints estándar de instrumentación.
+    \item \textbf{Grafana}: visualización de métricas mediante dashboards configurables que permiten un seguimiento sencillo de la actividad de los servicios.
+    \item \textbf{Jaeger y OpenTelemetry}: trazabilidad distribuida de solicitudes, lo que facilita comprender cómo las peticiones fluyen a través de los servicios.
+    \item \textbf{Docker y Minikube}: contenerización y simulación de un clúster local de Kubernetes, permitiendo reproducir el entorno en cualquier máquina de desarrollo.
 \end{itemize}
 
 Se decidió dejar fuera ELK Stack en esta primera versión para reducir la complejidad, dejando abierta su integración en fases posteriores.
@@ -26,123 +28,314 @@ Se decidió dejar fuera ELK Stack en esta primera versión para reducir la compl
 El trabajo se desarrolló de manera individual con planificación semanal, control de versiones mediante GitHub y documentación progresiva de cada fase. Esto permitió:
 
 \begin{itemize}
-	\item Registrar cada cambio en configuraciones y scripts.
-	\item Garantizar la reproducibilidad del entorno de desarrollo.
-	\item Documentar buenas prácticas de instrumentación de microservicios para futuros desarrollos.
+    \item Registrar cada cambio en configuraciones y scripts.
+    \item Garantizar la reproducibilidad del entorno de desarrollo.
+    \item Documentar buenas prácticas de instrumentación de microservicios para futuros desarrollos.
 \end{itemize}
 
 \subsection{Requisitos funcionales y no funcionales}
 
 \textbf{Funcionales:}
 \begin{itemize}
-	\item Captura de métricas básicas de los microservicios.
-	\item Visualización de métricas mediante dashboards.
-	\item Recolección de trazas de solicitudes entre servicios.
-	\item Despliegue automatizado en un entorno local reproducible.
+    \item Captura de métricas básicas de los microservicios.
+    \item Visualización de métricas mediante dashboards.
+    \item Recolección de trazas de solicitudes entre servicios.
+    \item Despliegue automatizado en un entorno local reproducible.
 \end{itemize}
 
 \textbf{No funcionales:}
 \begin{itemize}
-	\item Facilidad de replicación del entorno en otras máquinas.
-	\item Documentación clara para replicar el prototipo.
-	\item Ligereza del entorno, compatible con recursos limitados de desarrollo local.
+    \item Facilidad de replicación del entorno en otras máquinas.
+    \item Documentación clara para replicar el prototipo.
+    \item Ligereza del entorno, compatible con recursos limitados de desarrollo local.
 \end{itemize}
 
 \section{Descripción del sistema desarrollado e implementación}
 
 \subsection{Arquitectura y diseño}
 
-El prototipo integra tres microservicios Spring Boot instrumentados con OpenTelemetry y métricas compatibles con Prometheus. La arquitectura contempla:
+El prototipo integra tres microservicios desarrollados con Spring Boot, instrumentados con OpenTelemetry y con exposición de métricas compatibles con Prometheus. La arquitectura fue diseñada para simular un flujo real de comunicación entre servicios y evaluar capacidades de observabilidad distribuida. En concreto, contempla:
 
 \begin{itemize}
-	\item Microservicios REST básicos que permiten simular flujos de solicitudes.
-	\item Prometheus para recolección de métricas de CPU, memoria, tiempo de respuesta y número de peticiones.
-	\item Grafana para visualización de métricas mediante dashboards configurables.
-	\item Jaeger para trazabilidad de solicitudes distribuidas.
+    \item Tres microservicios REST independientes, denominados Service-A, Service-B y Service-C, que implementan un flujo de llamadas encadenadas A → B → C.
+    \item Service-A expone un endpoint de entrada que inicia la cadena de peticiones hacia Service-B, el cual a su vez invoca a Service-C, permitiendo generar trazas distribuidas completas.
+    \item Prometheus como sistema de recolección de métricas, configurado para consultar periódicamente los endpoints de métricas de cada microservicio.
+    \item Grafana como herramienta de visualización, conectada a Prometheus para la creación de dashboards de monitorización.
+    \item Jaeger como sistema de trazabilidad distribuida, encargado de recibir y visualizar las trazas generadas durante la ejecución de las peticiones.
 \end{itemize}
 
+La Figura~\ref{fig:arquitectura} muestra la arquitectura del sistema y el flujo de comunicación entre los microservicios junto con los componentes de observabilidad.
+
 \begin{figure}[H]
-	\centering
-	\includegraphics[width=0.8\textwidth]{contenido/imagenes/arquitectura-tfm.png}
-	\caption{Arquitectura simplificada del prototipo en entorno local.}
-	\label{fig:arquitectura}
+    \centering
+    \includegraphics[width=0.8\textwidth]{contenido/imagenes/arquitectura-tfm.png}
+    \caption{Arquitectura simplificada del prototipo en entorno local. Fuente: Elaboración propia.}
+    \label{fig:arquitectura}
 \end{figure}
 
 \subsection{Implementación detallada}
 
-\paragraph{Contenerización con Docker}
+\paragraph{Contenerización con Docker}\mbox{}
 
-Cada microservicio y herramienta se encapsuló en contenedores Docker. Esto permitió:
+Cada microservicio fue encapsulado en una imagen Docker independiente, construida a partir de Java 17 y empaquetando la aplicación Spring Boot compilada:
+
+\begin{verbatim}
+FROM eclipse-temurin:17-jdk
+
+COPY target/service-a-0.0.1-SNAPSHOT.jar app.jar
+COPY docker/otel/opentelemetry-javaagent.jar /otel/otel.jar
+
+ENTRYPOINT ["java","-javaagent:/otel/otel.jar","-jar","/app.jar"]
+\end{verbatim}
+
+Esta configuración permite instrumentar las peticiones HTTP, la generación de trazas y métricas básicas sin modificar el código de los microservicios. Este enfoque facilita la replicación, el aprendizaje y la comprensión práctica de la observabilidad en arquitecturas de microservicios.
+
+\paragraph{Despliegue en Kubernetes (Minikube)}\mbox{}
+
+El despliegue del sistema se realizó sobre un clúster local utilizando Minikube, simulando un entorno orquestado similar a producción. Cada microservicio se desplegó mediante recursos \texttt{Deployment} y \texttt{Service}, permitiendo la comunicación interna entre pods.
+
+La instrumentación con OpenTelemetry se configuró mediante variables de entorno en los manifiestos de Kubernetes:
+
+\begin{verbatim}
+env:
+- name: OTEL_SERVICE_NAME
+  value: service-a
+- name: OTEL_TRACES_EXPORTER
+  value: otlp
+- name: OTEL_EXPORTER_OTLP_ENDPOINT
+  value: http://jaeger:4317
+- name: OTEL_EXPORTER_OTLP_PROTOCOL
+  value: grpc
+- name: OTEL_METRICS_EXPORTER
+  value: none
+\end{verbatim}
+
+De esta manera:
 
 \begin{itemize}
-	\item Aislar dependencias de cada servicio.
-	\item Reproducir el entorno fácilmente en cualquier máquina.
-	\item Garantizar consistencia entre despliegues.
+    \item Se define un nombre lógico para el servicio (\texttt{OTEL\_SERVICE\_NAME}).
+    \item Las trazas se envían a Jaeger mediante OTLP sobre gRPC.
+    \item La recolección de métricas se realiza directamente a través de Prometheus, deshabilitando la exportación de métricas del agente.
+    \item Todo el proceso se realiza sin cambios en el código.
 \end{itemize}
 
-\paragraph{Despliegue en Kubernetes (Minikube)}
+\subsubsection{Instrumentación con OpenTelemetry}
 
-Se configuró un clúster local con Minikube para simular un entorno de producción:
+La instrumentación se realiza de forma transparente mediante el agente de OpenTelemetry integrado en Docker y configurado desde Kubernetes, como se mostró anteriormente. Esto permite recolectar métricas, logs y trazas distribuidas sin modificar el código de los microservicios.
 
-\begin{itemize}
-	\item Cada servicio desplegado mediante \texttt{Deployment} y \texttt{Service}.
-	\item Volúmenes persistentes para almacenar logs y datos temporales.
-	\item Configuración básica de Prometheus, Grafana y Jaeger para integrarlos con los microservicios.
-\end{itemize}
+\subsection{Despliegue de componentes de observabilidad}
 
-\paragraph{Integración de observabilidad}
+\paragraph{Jaeger}
 
-\begin{itemize}
-	\item Prometheus recolecta métricas desde los microservicios.
-	\item Grafana se conecta a Prometheus para generar dashboards básicos.
-	\item Jaeger permite visualizar trazas de solicitudes que atraviesan múltiples servicios, mostrando tiempos de respuesta y secuencia de llamadas.
-\end{itemize}
+\begin{verbatim}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaeger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jaeger
+  template:
+    metadata:
+      labels:
+        app: jaeger
+    spec:
+      containers:
+      - name: jaeger
+        image: jaegertracing/all-in-one:1.43
+        ports:
+        - containerPort: 16686
+        - containerPort: 4317
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger
+spec:
+  selector:
+    app: jaeger
+  ports:
+  - port: 16686
+    targetPort: 16686
+  - port: 4317
+    targetPort: 4317
+\end{verbatim}
+
+\paragraph{Prometheus}
+
+\begin{verbatim}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+    scrape_configs:
+      - job_name: 'microservices'
+        static_configs:
+          - targets: ['service-a:8080', 'service-b:8080', 'service-c:8080']
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+      - name: prometheus
+        image: prom/prometheus:v2.45.0
+        ports:
+        - containerPort: 9090
+        volumeMounts:
+        - name: config
+          mountPath: /etc/prometheus/
+      volumes:
+      - name: config
+        configMap:
+          name: prometheus-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+spec:
+  selector:
+    app: prometheus
+  ports:
+  - port: 9090
+    targetPort: 9090
+\end{verbatim}
+
+\paragraph{Grafana}
+
+\begin{verbatim}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: grafana/grafana:10.3
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  selector:
+    app: grafana
+  ports:
+  - port: 3000
+    targetPort: 3000
+\end{verbatim}
 
 \subsection{Metodología de desarrollo}
 
 Se siguió un enfoque iterativo, con entregas semanales que incluían desarrollo, despliegue y documentación. Esto permitió:
 
 \begin{itemize}
-	\item Validar la correcta instrumentación de los microservicios.
-	\item Ajustar configuraciones y dashboards según necesidades.
-	\item Documentar procedimientos de despliegue y operación del prototipo.
+    \item Validar la correcta instrumentación de los microservicios.
+    \item Ajustar configuraciones y dashboards según necesidades.
+    \item Documentar procedimientos de despliegue y operación del prototipo.
 \end{itemize}
 
 \section{Evaluación y pruebas}
 
 \subsection{Pruebas funcionales}
 
-Para validar la funcionalidad de la plataforma, se realizaron pruebas de monitoreo y trazabilidad:
+Para validar el correcto funcionamiento del prototipo de observabilidad, se realizaron pruebas prácticas sobre el clúster local desplegado en Minikube. Estas pruebas se centraron en verificar la comunicación entre microservicios, la recolección de métricas y la generación de trazas distribuidas.
 
-\begin{itemize}
-	\item Generación de tráfico simulado entre microservicios.
-	\item Verificación de recolección de métricas en Prometheus.
-	\item Visualización de métricas en dashboards de Grafana.
-	\item Seguimiento de trazas completas en Jaeger, confirmando la correcta correlación de llamadas entre servicios.
-\end{itemize}
+En primer lugar, se generó tráfico manual mediante peticiones HTTP desde el entorno local, exponiendo el microservicio inicial mediante un \texttt{port-forward}. Un ejemplo de prueba ejecutada fue:
+
+\begin{verbatim}
+curl http://localhost:8081/api/call-bc
+\end{verbatim}
+
+Esta petición provoca una cadena de llamadas entre los microservicios, donde el servicio A invoca al servicio B y este, a su vez, al servicio C. La respuesta obtenida confirma el recorrido completo de la solicitud a través del sistema.
+
+Durante estas pruebas se verificó el estado de los pods mediante \texttt{kubectl}, comprobando que todos los servicios se encontraban en estado \texttt{Running}, lo que garantizó la disponibilidad y correcta ejecución de los microservicios dentro del clúster.
+
+Como resultado de las pruebas realizadas, se obtuvo evidencia visual del correcto funcionamiento del sistema de observabilidad. Las métricas recolectadas por Prometheus fueron visualizadas mediante dashboards en Grafana, permitiendo analizar el comportamiento de los microservicios en tiempo real.
+
+Asimismo, Jaeger mostró de forma gráfica las trazas distribuidas correspondientes a las solicitudes generadas, facilitando la identificación del recorrido completo de una petición desde el servicio inicial hasta el servicio final. Estas visualizaciones confirman que la instrumentación de los microservicios y la integración de las herramientas de observabilidad funcionan de manera coherente y consistente.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{contenido/imagenes/grafana-cpu.png}
+    \caption{Panel de Grafana mostrando el uso de CPU de los microservicios. Fuente: Elaboración propia.}
+    \label{fig:grafana-cpu}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{contenido/imagenes/grafana-latencia.png}
+    \caption{Panel de Grafana mostrando la latencia de las solicitudes entre microservicios. Fuente: Elaboración propia.}
+    \label{fig:grafana-latencia}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{contenido/imagenes/grafana-llamadas.png}
+    \caption{Panel de Grafana mostrando el número de llamadas entre microservicios. Fuente: Elaboración propia.}
+    \label{fig:grafana-llamadas}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{contenido/imagenes/jaeger-trazas.png}
+    \caption{Visualización de trazas distribuidas en Jaeger, mostrando el flujo de llamadas entre los microservicios. Fuente: Elaboración propia.}
+    \label{fig:jaeger-trazas}
+\end{figure}
 
 \subsection{Usabilidad y aplicabilidad}
 
-El prototipo permitió comprobar que:
+El prototipo permitió validar la viabilidad de una plataforma de observabilidad integrada en un entorno de microservicios. Prometheus recolectó métricas expuestas por los servicios a través del endpoint \texttt{/actuator/prometheus}, permitiendo analizar información relevante como número de peticiones, tiempos de respuesta y consumo básico de recursos.
 
-\begin{itemize}
-	\item Los microservicios están correctamente instrumentados para observabilidad básica.
-	\item La recolección de métricas y trazas funciona de manera consistente en un entorno local.
-	\item Se dispone de una base funcional para futuras ampliaciones hacia entornos productivos o integración de nuevas herramientas.
-\end{itemize}
+Estas métricas fueron visualizadas en Grafana mediante dashboards configurables, facilitando el seguimiento del comportamiento de los microservicios en tiempo real y ofreciendo una visión consolidada del estado del sistema.
+
+Adicionalmente, Jaeger permitió visualizar trazas distribuidas completas, mostrando la secuencia de llamadas entre los distintos microservicios y los tiempos asociados a cada tramo de la petición. Esto confirmó que la instrumentación con OpenTelemetry funcionó de forma correcta y transparente, sin necesidad de realizar cambios significativos en el código de los servicios.
+
+En conjunto, la plataforma demostró ser sencilla de utilizar, fácilmente replicable y adecuada como base para el estudio y comprensión de la observabilidad en arquitecturas de microservicios. Este enfoque facilita la replicación, el aprendizaje y la comprensión práctica de la observabilidad en arquitecturas de microservicios.
 
 \subsection{Limitaciones y futuras mejoras}
 
 \textbf{Limitaciones actuales:}
 \begin{itemize}
-	\item Alcance limitado a un prototipo local y microservicios simples.
-	\item Funcionalidad de observabilidad básica, sin integración de alertas ni logs centralizados.
+    \item Alcance limitado a un prototipo local y microservicios simples.
+    \item Funcionalidad de observabilidad básica, sin integración de alertas ni logs centralizados.
 \end{itemize}
 
 \textbf{Futuras mejoras:}
 \begin{itemize}
-	\item Integración de ELK Stack para gestión de logs centralizada.
-	\item Automatización avanzada de despliegue con Helm y Ansible.
-	\item Escalabilidad hacia entornos de nube o multi-nube.
-	\item Creación de dashboards más completos con métricas personalizadas.
+    \item Integración de ELK Stack para gestión de logs centralizada.
+    \item Automatización avanzada de despliegue con Helm y Ansible.
+    \item Escalabilidad hacia entornos de nube o multi-nube.
+    \item Creación de dashboards más completos con métricas personalizadas.
 \end{itemize}
+
+Este enfoque facilita la replicación, el aprendizaje y la comprensión práctica de la observabi-
+lidad en arquitecturas de microservicios.
