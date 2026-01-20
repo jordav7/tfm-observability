@@ -1,12 +1,17 @@
 \chapter{Desarrollo específico de la contribución}\label{chap:desarrollo}
 
-Este capítulo describe el desarrollo detallado del prototipo de plataforma de observabilidad para microservicios. Se incluyen la planificación, el análisis de requisitos, la justificación de las tecnologías empleadas, la arquitectura del sistema, la implementación técnica, la instrumentación de los microservicios y la evaluación mediante pruebas funcionales y de usabilidad. 
+Este capítulo describe de forma detallada el desarrollo del prototipo de plataforma de observabilidad para arquitecturas de microservicios propuesto en este Trabajo Fin de Máster. Se presentan las decisiones técnicas adoptadas, el análisis de requisitos, la arquitectura del sistema, la implementación de los microservicios y la integración de las herramientas de observabilidad seleccionadas.
 
-El capítulo se organiza de la siguiente manera: en el apartado 4.1 se presentan la planificación, el análisis de requisitos y la selección de tecnologías; en 4.2 se detalla la arquitectura del sistema, la implementación de los microservicios y la integración de herramientas de observabilidad; finalmente, en 4.3 se describen las pruebas realizadas, la evaluación de la usabilidad y aplicabilidad del prototipo, y las posibles limitaciones y mejoras futuras.
+Asimismo, se aborda el proceso de instrumentación de los microservicios, el despliegue en un entorno orquestado mediante Kubernetes y la validación del sistema a través de pruebas funcionales y de usabilidad. El objetivo es demostrar, de manera práctica, la viabilidad y utilidad de una solución de observabilidad integrada y reproducible en entornos distribuidos.
+
+El capítulo se organiza de la siguiente manera: en la Sección 4.1 se presenta la planificación del proyecto, el análisis del contexto y del problema, la justificación de las tecnologías empleadas y los requisitos funcionales y no funcionales. La Sección 4.2 describe la arquitectura del sistema y el desarrollo técnico del prototipo, incluyendo la contenerización, el despliegue y la instrumentación de los microservicios, así como la integración de las herramientas de monitorización y trazabilidad. Finalmente, la Sección 4.3 expone la evaluación del sistema mediante pruebas funcionales, el análisis de su usabilidad y aplicabilidad, y las principales limitaciones identificadas junto con posibles líneas de mejora.
 
 \section{Planificación, Análisis y Requisitos}
 
-En este apartado se describe el contexto y problema que motivaron el proyecto, la elección de tecnologías, la organización del desarrollo y los requisitos funcionales y no funcionales que guían la construcción del prototipo. Este apartado se divide en los subapartados: 
+Esta sección presenta el análisis previo necesario para el desarrollo del prototipo de observabilidad, abordando el contexto y el problema que motivan el proyecto, la justificación de las tecnologías seleccionadas, la organización del trabajo y la definición de los requisitos funcionales y no funcionales. Estos elementos constituyen la base sobre la cual se diseñó e implementó la solución propuesta, garantizando coherencia entre los objetivos planteados y el desarrollo técnico del sistema.
+
+En base a los aspectos analizados, se identifican los principales retos que motivan el desarrollo del prototipo de observabilidad propuesto en este trabajo:
+
 \begin{itemize}
 	\item 4.1.1 Contexto y problema.
 	\item 4.1.2 Justificación de tecnologías.
@@ -16,11 +21,21 @@ En este apartado se describe el contexto y problema que motivaron el proyecto, l
 
 \subsection{Contexto y problema}
 
-En arquitecturas de microservicios, uno de los retos más importantes es lograr una observabilidad efectiva. Cada servicio se ejecuta de forma independiente, interactúa con distintos componentes y genera información distribuida que, de no gestionarse correctamente, dificulta la detección de fallos, el diagnóstico y la mejora continua del sistema. La complejidad aumenta cuando se busca correlacionar información entre servicios, identificar patrones de comportamiento o anticipar problemas.
+Las arquitecturas basadas en microservicios han ganado una adopción significativa en los últimos años debido a su capacidad para escalar de forma independiente, facilitar el despliegue continuo y permitir una mayor flexibilidad en el desarrollo de software. Sin embargo, esta descomposición de las aplicaciones en múltiples servicios autónomos introduce una complejidad operativa considerable, especialmente en lo relativo a la supervisión, el diagnóstico de errores y la comprensión del comportamiento global del sistema.
 
-Por este motivo, el objetivo del proyecto fue desarrollar un prototipo de plataforma de observabilidad que integre métricas, logs y trazabilidad de manera sencilla, permitiendo a los desarrolladores y equipos de operaciones tener visibilidad sobre el funcionamiento de los microservicios, sin depender de herramientas complejas ni entornos productivos.
+En un entorno de microservicios, cada componente se ejecuta de forma independiente, puede estar desplegado en contenedores distintos y comunicarse con otros servicios a través de la red. Como consecuencia, una única solicitud de usuario puede atravesar varios servicios antes de completarse. Identificar el origen de problemas como latencias elevadas, fallos intermitentes o degradación del rendimiento resulta complejo si no se dispone de mecanismos adecuados de observabilidad.
 
-Adicionalmente, la falta de estandarización en la instrumentación de microservicios y la diversidad de frameworks y lenguajes usados en un entorno de producción real generan desafíos concretos:
+Uno de los principales problemas detectados en este tipo de arquitecturas es la \textbf{fragmentación de la información}. Cada microservicio genera métricas, logs y eventos de manera independiente, lo que dificulta correlacionar estos datos para obtener una visión completa del sistema. Por ejemplo, un aumento en el tiempo de respuesta percibido por el usuario puede estar provocado por un cuello de botella en un servicio intermedio, por problemas de comunicación entre servicios o por una sobrecarga puntual de recursos en un nodo del clúster.
+
+Asimismo, la \textbf{trazabilidad de las solicitudes} representa otro desafío relevante. En ausencia de mecanismos de trazabilidad distribuida, resulta difícil seguir el recorrido de una petición a través de múltiples microservicios y determinar en qué punto se produce un retraso o un fallo. Este problema se acentúa en escenarios donde los errores no son reproducibles de forma constante o aparecen únicamente bajo determinadas condiciones de carga.
+
+Otro aspecto crítico es la \textbf{dificultad para reproducir entornos de producción en local}. Los sistemas reales suelen ejecutarse sobre plataformas orquestadas como Kubernetes, con múltiples servicios, configuraciones dinámicas y herramientas de monitorización asociadas. Para muchos desarrolladores y equipos de operaciones, replicar este entorno con fines de prueba o aprendizaje resulta complejo y costoso, limitando la capacidad de experimentar, validar cambios o comprender el comportamiento del sistema antes de su despliegue en producción.
+
+Además, la falta de métricas y trazas consistentes dificulta la toma de decisiones técnicas fundamentadas. Sin datos objetivos sobre consumo de recursos, latencias o tasas de error, resulta complicado optimizar el rendimiento, planificar la escalabilidad o evaluar el impacto de cambios en la arquitectura. Esto puede derivar en decisiones basadas en suposiciones, aumentando el riesgo de degradación del servicio.
+
+Ante esta problemática, surge la necesidad de una solución de observabilidad que integre la recolección de métricas, logs y trazas, ofreciendo una visión coherente del comportamiento de los microservicios. En este contexto, el prototipo desarrollado en este trabajo busca abordar los retos identificados mediante un entorno controlado y reproducible que facilite la experimentación y evaluación de arquitecturas de microservicios.
+
+Los principales retos que motivan el desarrollo del prototipo son:
 
 \begin{itemize}
     \item \textbf{Visibilidad fragmentada:} los logs y métricas de cada servicio pueden encontrarse en diferentes formatos o ubicaciones, dificultando correlacionar eventos y detectar cuellos de botella.
@@ -29,58 +44,166 @@ Adicionalmente, la falta de estandarización en la instrumentación de microserv
     \item \textbf{Necesidad de decisiones basadas en métricas:} sin métricas consistentes, es difícil evaluar el rendimiento de los servicios, optimizar recursos y tomar decisiones fundamentadas sobre mejoras o escalabilidad.
 \end{itemize}
 
-En este contexto, el prototipo diseñado busca ofrecer una solución replicable y controlada que permita:
+En base a estos retos, el prototipo desarrollado busca proporcionar:
 
 \begin{itemize}
-    \item Visualizar el comportamiento de las aplicaciones y detectar fallos de manera temprana.
-    \item Analizar tiempos de respuesta, latencias y carga entre servicios.
-    \item Correlacionar trazas de solicitudes para comprender el flujo completo entre microservicios.
-    \item Servir como base de aprendizaje y experimentación sin requerir un entorno productivo completo.
+    \item Visualización centralizada del comportamiento de las aplicaciones y detección temprana de fallos.
+    \item Análisis de tiempos de respuesta, latencias y carga entre servicios.
+    \item Correlación de trazas de solicitudes para comprender el flujo completo entre microservicios.
+    \item Entorno de aprendizaje y experimentación replicable, sin necesidad de disponer del sistema productivo completo.
 \end{itemize}
 
-Este enfoque proporciona una justificación técnica clara para la elección de OpenTelemetry, Prometheus, Grafana y Jaeger, ya que estas herramientas permiten instrumentar los servicios de manera uniforme, recolectar métricas y trazas, y visualizarlas de forma centralizada sin modificar el código fuente.
+Esta aproximación justifica la elección de herramientas como OpenTelemetry, Prometheus, Grafana y Jaeger, que permiten instrumentar los microservicios de manera uniforme, centralizar métricas y trazas, y ofrecer una visión coherente del sistema distribuido, resolviendo de manera práctica los problemas identificados.
 
 \subsection{Justificación de tecnologías}
 
-Se eligieron herramientas maduras, con buena documentación y soporte comunitario, que permitieran un despliegue ágil y funcional:
+La selección de tecnologías para la plataforma de observabilidad se ha realizado considerando criterios de estandarización, facilidad de integración, soporte de la comunidad, y capacidad para cubrir los principales retos identificados en la sección anterior: visibilidad fragmentada, trazabilidad de solicitudes, dificultad para pruebas locales y necesidad de decisiones basadas en métricas.
+
+A continuación se detallan las herramientas seleccionadas y la justificación de su inclusión:
 
 \begin{itemize}
-    \item \textbf{Prometheus:} captura de métricas de servicios y componentes, con compatibilidad con endpoints estándar de instrumentación.
-    \item \textbf{Grafana:} visualización de métricas mediante dashboards configurables que permiten un seguimiento sencillo de la actividad de los servicios.
-    \item \textbf{Jaeger y OpenTelemetry:} trazabilidad distribuida de solicitudes, lo que facilita comprender cómo las peticiones fluyen a través de los servicios.
-    \item \textbf{Docker y Minikube:} contenerización y simulación de un clúster local de Kubernetes, permitiendo reproducir el entorno en cualquier máquina de desarrollo.
+    \item \textbf{OpenTelemetry:} proporciona un estándar abierto para la instrumentación de aplicaciones, permitiendo recolectar métricas, trazas y logs de manera uniforme en todos los microservicios. Facilita la trazabilidad distribuida, resolviendo el reto de seguir el flujo de solicitudes a través de múltiples servicios.
+    
+    \item \textbf{Prometheus:} herramienta de monitorización basada en métricas, ampliamente adoptada en entornos de microservicios y Kubernetes. Permite recolectar, almacenar y consultar métricas de forma eficiente, ayudando a tomar decisiones fundamentadas sobre rendimiento y escalabilidad.
+    
+    \item \textbf{Grafana:} plataforma de visualización que se integra con Prometheus y otras fuentes de datos. Permite construir dashboards personalizados y visualizaciones en tiempo real, facilitando la identificación de cuellos de botella y problemas de rendimiento.
+    
+    \item \textbf{Jaeger:} sistema de trazabilidad distribuida que permite seguir las solicitudes a lo largo de varios microservicios. Su integración con OpenTelemetry garantiza visibilidad completa del flujo de ejecución, contribuyendo a una rápida identificación de fallos y optimización de latencias.
 \end{itemize}
 
-Se decidió dejar fuera ELK Stack en esta primera versión para reducir la complejidad, dejando abierta su integración en fases posteriores.
+Para reforzar la elección de estas tecnologías, se compara brevemente con alternativas disponibles en el mercado:
+
+\begin{table}[h!]
+    \centering
+    \caption{Comparativa de tecnologías de observabilidad}
+    \label{tab:comparativa-tecnologias}
+    \begin{tabular}{|l|l|l|l|}
+        \hline
+        \textbf{Herramienta} & \textbf{Función} & \textbf{Ventajas} & \textbf{Limitaciones} \\
+        \hline
+        OpenTelemetry & Instrumentación & Estándar abierto, integración con múltiples backends & Curva de aprendizaje inicial \\
+        \hline
+        Prometheus & Métricas & Alta eficiencia, soporte Kubernetes & No centraliza logs ni trazas \\
+        \hline
+        Grafana & Visualización & Dashboards flexibles, soporte multifuente & Necesita otras herramientas para trazas/logs \\
+        \hline
+        Jaeger & Trazabilidad & Visualización de trazas distribuidas & Depende de la correcta instrumentación \\
+        \hline
+    \end{tabular}
+    \vspace{0.2cm}
+    \footnotesize{Fuente: elaboración propia a partir de documentación oficial de las herramientas.}
+\end{table}
+
+La combinación de estas tecnologías cubre de manera integral los retos identificados:
+
+\begin{itemize}
+    \item Centraliza métricas, logs y trazas en un único ecosistema.
+    \item Permite visualizar el comportamiento del sistema en tiempo real.
+    \item Facilita la replicación del entorno para pruebas locales y aprendizaje.
+    \item Proporciona datos objetivos para decisiones de optimización y escalabilidad.
+\end{itemize}
+
+De este modo, la plataforma propuesta garantiza una solución de observabilidad completa, reproducible y coherente con los objetivos planteados en este Trabajo Fin de Máster.
 
 \subsection{Organización del desarrollo}
 
-El trabajo se desarrolló de manera individual con planificación semanal, control de versiones mediante GitHub y documentación progresiva de cada fase. Esto permitió:
+La organización del desarrollo del prototipo de plataforma de observabilidad se ha estructurado en fases claramente definidas, siguiendo un enfoque iterativo y basado en buenas prácticas de DevOps. Esta estructura permite un avance controlado, la validación temprana de resultados y la documentación sistemática de todo el proceso. 
+
+Las fases principales del desarrollo son:
+
+\begin{enumerate}
+    \item \textbf{Planificación y análisis:} identificación del contexto y problemas, definición de objetivos, selección de herramientas y establecimiento de requisitos funcionales y no funcionales. Esta fase garantiza que el desarrollo se realice sobre una base técnica sólida y alineada con los objetivos del TFM.
+    
+    \item \textbf{Diseño de la arquitectura:} definición de la arquitectura de microservicios, selección de tecnologías de orquestación (Kubernetes), diseño de contenedores y planificación de la integración de herramientas de observabilidad (OpenTelemetry, Prometheus, Grafana y Jaeger). 
+    
+    \item \textbf{Implementación del prototipo:} desarrollo de microservicios de ejemplo con Spring Boot, instrumentación mediante OpenTelemetry, configuración de contenedores Docker, despliegue inicial en Minikube y pruebas de integración de métricas, logs y trazas.
+    
+    \item \textbf{Automatización y despliegue reproducible:} creación de Helm charts para la orquestación de servicios y herramientas, desarrollo de playbooks de Ansible para la configuración del entorno y definición de pipelines CI/CD con GitHub Actions. Esta fase asegura la reproducibilidad y facilita la escalabilidad del prototipo.
+    
+    \item \textbf{Evaluación y validación:} ejecución de pruebas funcionales y de carga, verificación de métricas y trazas, análisis de la usabilidad de los dashboards y registro de resultados. Esta fase permite identificar mejoras, cuellos de botella y oportunidades de optimización.
+    
+    \item \textbf{Documentación y aprendizaje:} recopilación de configuraciones, scripts, dashboards y procedimientos de despliegue, generando documentación técnica completa que pueda ser reutilizada y adaptada por otros equipos.
+\end{enumerate}
+
+La coordinación de estas fases se ha planificado de manera incremental, permitiendo:
 
 \begin{itemize}
-    \item Registrar cada cambio en configuraciones y scripts.
-    \item Garantizar la reproducibilidad del entorno de desarrollo.
-    \item Documentar buenas prácticas de instrumentación de microservicios para futuros desarrollos.
+    \item Ajustes iterativos basados en resultados parciales y pruebas de integración.
+    \item Incorporación de mejoras continuas en el prototipo y en los scripts de automatización.
+    \item Verificación constante de que los objetivos técnicos y de observabilidad se cumplan.
 \end{itemize}
+
+\paragraph{Herramientas de gestión y seguimiento}
+
+Para mantener un control riguroso del progreso, se ha utilizado:
+
+\begin{itemize}
+    \item \textbf{GitHub:} repositorio centralizado del código fuente y control de versiones de contenedores, configuraciones y scripts.
+    \item \textbf{GitHub Actions:} pipelines de integración continua para automatizar compilación, pruebas y despliegue.
+    \item \textbf{Tableros de planificación:} seguimiento de tareas, hitos y entregables para organizar el trabajo de manera eficiente y asegurar la trazabilidad de cada actividad.
+\end{itemize}
+
+Esta organización del desarrollo garantiza que el prototipo se construya de manera ordenada, reproducible y escalable, permitiendo una transición fluida hacia la siguiente sección, donde se describe la arquitectura del sistema y el desarrollo técnico del prototipo.
 
 \subsection{Requisitos funcionales y no funcionales}
 
-\textbf{Funcionales:}
+Para garantizar que la plataforma de observabilidad cumpla con los objetivos planteados, se han definido un conjunto de requisitos funcionales y no funcionales. Estos requisitos guían el diseño, la implementación y la evaluación del prototipo, asegurando que sea útil, reproducible y escalable.
+
+\subsubsection{Requisitos funcionales}
+
+Los requisitos funcionales definen las capacidades que el sistema debe ofrecer para cumplir con sus objetivos:
+
 \begin{itemize}
-    \item Captura de métricas básicas de los microservicios.
-    \item Visualización de métricas mediante dashboards.
-    \item Recolección de trazas de solicitudes entre servicios.
-    \item Despliegue automatizado en un entorno local reproducible.
+    \item \textbf{RF1 - Recolección de métricas:} El sistema debe capturar métricas de rendimiento de todos los microservicios, incluyendo CPU, memoria, tiempos de respuesta y tasas de error.
+    \item \textbf{RF2 - Centralización de logs:} Todos los logs generados por los microservicios deben almacenarse de manera centralizada para permitir su búsqueda, filtrado y análisis.
+    \item \textbf{RF3 - Trazabilidad distribuida:} Cada solicitud que atraviese múltiples microservicios debe poder seguirse mediante trazas, identificando la duración y los puntos críticos de cada paso.
+    \item \textbf{RF4 - Visualización de dashboards:} El sistema debe proporcionar dashboards interactivos que presenten métricas y trazas en tiempo real, facilitando la interpretación de los datos.
+    \item \textbf{RF5 - Alertas y notificaciones:} Deben configurarse alertas automáticas ante eventos críticos, como caída de servicios, latencias excesivas o errores recurrentes.
+    \item \textbf{RF6 - Despliegue reproducible:} La plataforma debe poder desplegarse de manera consistente en distintos entornos mediante automatización (Helm, Ansible, CI/CD).
 \end{itemize}
 
-\textbf{No funcionales:}
+\subsubsection{Requisitos no funcionales}
+
+Los requisitos no funcionales definen las propiedades de calidad del sistema, asegurando su rendimiento, seguridad y escalabilidad:
+
 \begin{itemize}
-    \item Facilidad de replicación del entorno en otras máquinas.
-    \item Documentación clara para replicar el prototipo.
-    \item Ligereza del entorno, compatible con recursos limitados de desarrollo local.
+    \item \textbf{RNF1 - Escalabilidad:} La plataforma debe soportar un aumento en el número de microservicios sin degradar significativamente el rendimiento del monitoreo.
+    \item \textbf{RNF2 - Disponibilidad:} Los componentes de observabilidad deben permanecer operativos incluso ante fallos parciales de algunos microservicios.
+    \item \textbf{RNF3 - Seguridad:} Los datos recolectados deben protegerse mediante control de acceso y, cuando sea necesario, cifrado de métricas, logs y trazas.
+    \item \textbf{RNF4 - Reproducibilidad:} Los despliegues deben ser consistentes y replicables en entornos locales o remotos, garantizando que los resultados obtenidos sean comparables.
+    \item \textbf{RNF5 - Facilidad de mantenimiento:} La plataforma debe documentarse exhaustivamente, incluyendo configuraciones, scripts y procedimientos de despliegue.
+    \item \textbf{RNF6 - Rendimiento:} La recolección y procesamiento de métricas y trazas no debe afectar significativamente el rendimiento de los microservicios.
 \end{itemize}
 
-\section{Descripción del sistema desarrollado e implementación}
+\subsubsection{Resumen de requisitos}
+
+Para tener una visión consolidada de los requisitos, se puede presentar la siguiente tabla:
+
+\begin{table}[H]
+\centering
+\caption{Resumen de requisitos funcionales y no funcionales del prototipo de observabilidad}
+\label{tab:requisitos}
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{ID} & \textbf{Descripción} \\
+\hline
+RF1 & Recolección de métricas de CPU, memoria, tiempos de respuesta y errores. \\
+RF2 & Centralización de logs de todos los microservicios. \\
+RF3 & Trazabilidad distribuida de solicitudes a través de microservicios. \\
+RF4 & Dashboards interactivos para métricas y trazas en tiempo real. \\
+RF5 & Alertas automáticas ante eventos críticos. \\
+RF6 & Despliegue reproducible mediante Helm, Ansible y CI/CD. \\
+RNF1 & Escalabilidad ante incremento de microservicios y datos. \\
+RNF2 & Alta disponibilidad de los componentes de observabilidad. \\
+RNF3 & Seguridad de datos mediante control de acceso y cifrado. \\
+RNF4 & Reproducibilidad de despliegues en distintos entornos. \\
+RNF5 & Facilidad de mantenimiento y documentación completa. \\
+RNF6 & Rendimiento optimizado sin afectar los microservicios. \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Descripción del sistema desarrollado e implementación}\label{sec:implementacion}
 
 En esta sección se presenta el desarrollo concreto del prototipo de plataforma de observabilidad, incluyendo la arquitectura diseñada, la contenerización de los microservicios, la instrumentación con OpenTelemetry, el despliegue en Kubernetes y la integración de las herramientas de monitorización y trazabilidad.  
 
@@ -91,7 +214,7 @@ Los subapartados 4.2.1 a 4.2.3 detallan de manera progresiva:
 \begin{itemize}
 	\item 4.2.1 Arquitectura y diseño: descripción de los microservicios y componentes de observabilidad.
 	\item 4.2.2 Implementación detallada: contenerización, despliegue, instrumentación y configuración de Prometheus, Grafana y Jaeger.
-	\item 4.2.3 Metodología de desarrollo: enfoque iterativo, control de versiones y documentación progresiva.
+	\item 4.2.3 Metodología de desarrollo: enfoque iterativo, control de versiones, documentación progresiva y perspectivas de automatización con CI/CD y herramientas DevOps.
 \end{itemize}
 
 \subsection{Arquitectura y diseño}
@@ -130,11 +253,11 @@ COPY docker/otel/opentelemetry-javaagent.jar /otel/otel.jar
 ENTRYPOINT ["java","-javaagent:/otel/otel.jar","-jar","/app.jar"]
 \end{verbatim}
 
-Esta configuración permite instrumentar las peticiones HTTP, la generación de trazas y métricas básicas sin modificar el código de los microservicios. Este enfoque facilita la replicación, el aprendizaje y la comprensión práctica de la observabilidad en arquitecturas de microservicios.
+Esta configuración permite instrumentar las peticiones HTTP, la generación de trazas y métricas básicas sin modificar el código de los microservicios.  
 
 \paragraph{Despliegue en Kubernetes (Minikube)}\mbox{}
 
-El despliegue del sistema se realizó sobre un clúster local utilizando Minikube, simulando un entorno orquestado similar a producción. Cada microservicio se desplegó mediante recursos \texttt{Deployment} y \texttt{Service}, permitiendo la comunicación interna entre pods.
+El despliegue se realizó sobre un clúster local con Minikube, simulando un entorno orquestado similar a producción. Cada microservicio se desplegó mediante recursos \texttt{Deployment} y \texttt{Service}, permitiendo la comunicación interna entre pods.
 
 La instrumentación con OpenTelemetry se configuró mediante variables de entorno en los manifiestos de Kubernetes:
 
@@ -152,8 +275,6 @@ env:
   value: none
 \end{verbatim}
 
-De esta manera:
-
 \begin{itemize}
     \item Se define un nombre lógico para el servicio (\texttt{OTEL\_SERVICE\_NAME}).
     \item Las trazas se envían a Jaeger mediante OTLP sobre gRPC.
@@ -163,10 +284,11 @@ De esta manera:
 
 \subsubsection{Instrumentación con OpenTelemetry}
 
-La instrumentación se realiza de forma transparente mediante el agente de OpenTelemetry integrado en Docker y configurado desde Kubernetes, como se mostró anteriormente. Esto permite recolectar métricas, logs y trazas distribuidas sin modificar el código de los microservicios.
+La instrumentación se realiza de forma transparente mediante el agente de OpenTelemetry integrado en Docker y configurado desde Kubernetes. Esto permite recolectar métricas, logs y trazas distribuidas sin modificar el código de los microservicios.
 
 \subsection{Despliegue de componentes de observabilidad}
 
+% --- Jaeger ---
 \paragraph{Jaeger}
 \begin{verbatim}
 apiVersion: apps/v1
@@ -204,6 +326,7 @@ spec:
     targetPort: 4317
 \end{verbatim}
 
+% --- Prometheus ---
 \paragraph{Prometheus}
 \begin{verbatim}
 apiVersion: v1
@@ -258,6 +381,7 @@ spec:
     targetPort: 9090
 \end{verbatim}
 
+% --- Grafana ---
 \paragraph{Grafana}
 \begin{verbatim}
 apiVersion: apps/v1
@@ -292,15 +416,38 @@ spec:
     targetPort: 3000
 \end{verbatim}
 
-\subsection{Metodología de desarrollo}
+\subsection{Metodología de desarrollo y automatización}
 
-Se siguió un enfoque iterativo, con entregas semanales que incluían desarrollo, despliegue y documentación. Esto permitió:
+Se siguió un enfoque iterativo con entregas semanales que incluían desarrollo, despliegue y documentación. Esto permitió:
 
 \begin{itemize}
     \item Validar la correcta instrumentación de los microservicios.
     \item Ajustar configuraciones y dashboards según necesidades.
     \item Documentar procedimientos de despliegue y operación del prototipo.
 \end{itemize}
+
+\paragraph{Automatización y CI/CD}\mbox{}
+
+El despliegue inicial se realizó en Minikube de forma manual, pero el prototipo ya cuenta con automatización implementada mediante herramientas DevOps:
+
+\begin{itemize}
+    \item \textbf{Helm:} empaqueta todos los recursos de Kubernetes (Deployments, Services, ConfigMaps) en un solo \texttt{chart}, permitiendo despliegues reproducibles con un solo comando.
+    \item \textbf{Ansible:} se utiliza para preparar el entorno local, instalar dependencias y ejecutar despliegues de Helm de manera automatizada.
+    \item \textbf{CI/CD local:} mediante GitHub Actions, se ejecutan pruebas, se construyen imágenes Docker y se despliega automáticamente sobre Minikube, demostrando la viabilidad del flujo de integración y entrega continua.
+\end{itemize}
+
+Este enfoque asegura consistencia entre entornos, reduce errores humanos y documenta todos los pasos necesarios para reproducir la plataforma de forma confiable.
+
+\paragraph{Reflexión y limitaciones}\mbox{}
+
+El entorno local con Minikube permite experimentar y validar la instrumentación, visualización y trazabilidad. La automatización con Helm y Ansible ya se encuentra configurada y probada, aunque el entorno sigue presentando algunas limitaciones típicas de un clúster local:
+
+\begin{itemize}
+    \item No refleja completamente la escalabilidad ni la tolerancia a fallos de un clúster de producción en la nube.
+    \item Algunos recursos, como almacenamiento persistente y networking avanzado, deben simularse o adaptarse.
+\end{itemize}
+
+El prototipo proporciona así una base sólida para futuras ampliaciones, incluyendo despliegues en entornos en la nube, integración de alertas avanzadas y análisis predictivo de métricas y trazas.
 
 \section{Evaluación y pruebas}
 
@@ -359,7 +506,7 @@ Para evaluar la aplicabilidad del prototipo en contextos reales de desarrollo de
 \begin{itemize}
     \item \textbf{Facilidad de despliegue:} El prototipo puede ejecutarse en cualquier máquina local con recursos limitados, gracias a Minikube y Docker.
     \item \textbf{Claridad de visualización:} Los dashboards de Grafana y las trazas de Jaeger permiten comprender de manera intuitiva el comportamiento de los microservicios.
-    \item \textbf{Replicabilidad:} La documentación y scripts incluidos facilitan la replicación del entorno por parte de otros desarrolladores, permitiendo pruebas y experimentación sin riesgo sobre entornos productivos.
+    \item \textbf{Replicabilidad:} La documentación, scripts y la integración de Helm y Ansible facilitan la replicación del entorno por parte de otros desarrolladores, permitiendo pruebas y experimentación sin riesgo sobre entornos productivos.
     \item \textbf{Instrumentación estandarizada:} OpenTelemetry permite una integración homogénea de métricas y trazabilidad, independiente del lenguaje de programación o framework utilizado.
 \end{itemize}
 
@@ -376,11 +523,14 @@ Aunque el prototipo proporciona una base sólida para la observabilidad de micro
     \item \textbf{Alertas automáticas:} No se configuraron alertas automáticas; esto podría implementarse en futuras versiones mediante Prometheus Alertmanager.
 \end{itemize}
 
-Estas limitaciones ofrecen oportunidades para la expansión del prototipo, incluyendo:
+Aun así, la infraestructura del prototipo ya contempla Helm y Ansible para la automatización de despliegues y gestión de la plataforma. Esto permite que, en la entrega final, la configuración completa del clúster y de los microservicios pueda reproducirse de manera sencilla y uniforme, asegurando consistencia entre entornos locales y de producción.
+
+Oportunidades de mejora y ampliación incluyen:
 
 \begin{itemize}
-    \item Integración de un sistema de alertas.
+    \item Integración de un sistema de alertas automáticas.
     \item Adición de más microservicios y pruebas de escalabilidad.
     \item Extensión de dashboards y métricas personalizadas.
     \item Instrumentación de logs centralizados.
+    \item Ajustes y validación final de despliegues automatizados con Helm y Ansible.
 \end{itemize}
