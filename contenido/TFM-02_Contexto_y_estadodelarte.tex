@@ -83,14 +83,44 @@ Docker y Kubernetes permiten simular entornos de producción reales, gestionar e
 \begin{table}[H]
 	\centering
 	\caption{Comparativa de herramientas de observabilidad y justificación de elección. Fuente: Elaboración propia.}
-	\begin{tabularx}{14.5cm}{|L{0.18}|L{0.22}|L{0.22}|L{0.35}|}
-		\hline
-		\textbf{Pilar de observabilidad} & \textbf{Herramienta seleccionada} & \textbf{Alternativas consideradas} & \textbf{Justificación de la elección} \\ \hline
-		Monitoreo de métricas & Prometheus + Grafana & Zabbix, Nagios, Datadog (SaaS) & Integración nativa con Kubernetes, modelo de datos optimizado, soporte comunitario, visualización avanzada con Grafana. \\ \hline
-		Logging centralizado & ELK Stack & Fluentd, Graylog, Splunk (SaaS) & Solución open source madura, escalable, ampliamente adoptada, visualización potente y flexible, sin costes de licencia. \\ \hline
-		Trazabilidad distribuida & Jaeger + OpenTelemetry & Zipkin, New Relic (SaaS), Lightstep & Soporte CNCF, integración con Spring Boot y Kubernetes, trazabilidad de extremo a extremo, estándar emergente con OpenTelemetry. \\ \hline
-		Contenerización y orquestación & Docker + Kubernetes & Docker Swarm, Podman, OpenShift & Kubernetes es el estándar en orquestación; Docker es la base de la contenerización; compatibilidad total con herramientas de observabilidad modernas. \\ \hline
-		Automatización del despliegue & Helm + Ansible & Terraform, Kustomize & Helm permite empaquetado y despliegue declarativo; Ansible automatiza tareas fuera del clúster, ampliamente usado en DevOps. \\ \hline
+	\small
+	\begin{tabularx}{\textwidth}{%
+	>{\raggedright\arraybackslash}X
+	>{\raggedright\arraybackslash}X
+	>{\raggedright\arraybackslash}X
+	>{\raggedright\arraybackslash}X}
+	\toprule
+	\textbf{Pilar de observabilidad} &
+	\textbf{Herramienta seleccionada} &
+	\textbf{Alternativas consideradas} &
+	\textbf{Justificación de la elección} \\
+	\midrule
+	Monitoreo de métricas &
+	Prometheus + Grafana &
+	Zabbix, Nagios, Datadog (SaaS) &
+	Integración nativa con Kubernetes, modelo de datos optimizado, soporte comunitario y visualización avanzada con Grafana. \\
+	\midrule
+	Logging centralizado &
+	ELK Stack &
+	Fluentd, Graylog, Splunk (SaaS) &
+	Solución open source madura y escalable, ampliamente adoptada, con visualización potente y sin costes de licencia. \\
+	\midrule
+	Trazabilidad distribuida &
+	Jaeger + OpenTelemetry &
+	Zipkin, New Relic (SaaS), Lightstep &
+	Soporte CNCF, integración con Spring Boot y Kubernetes, trazabilidad de extremo a extremo y adopción del estándar OpenTelemetry. \\
+	\midrule
+	Contenerización y orquestación &
+	Docker + Kubernetes &
+	Docker Swarm, Podman, OpenShift &
+	Kubernetes es el estándar en orquestación y Docker la base de la contenerización, con compatibilidad total con herramientas modernas de observabilidad. \\
+	\midrule
+	Automatización del despliegue &
+	Helm + Ansible &
+	Terraform, Kustomize &
+	Helm facilita el empaquetado y despliegue declarativo, mientras que Ansible automatiza tareas externas al clúster y es ampliamente usado en DevOps. \\
+	\bottomrule
 	\end{tabularx}
 	\label{tab:comparativa_herramientas_observabilidad}
 \end{table}
+	

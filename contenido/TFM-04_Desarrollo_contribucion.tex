@@ -73,26 +73,44 @@ A continuación se detallan las herramientas seleccionadas y la justificación d
 
 Para reforzar la elección de estas tecnologías, se compara brevemente con alternativas disponibles en el mercado:
 
-\begin{table}[h!]
-    \centering
-    \caption{Comparativa de tecnologías de observabilidad}
-    \label{tab:comparativa-tecnologias}
-    \begin{tabular}{|l|l|l|l|}
-        \hline
-        \textbf{Herramienta} & \textbf{Función} & \textbf{Ventajas} & \textbf{Limitaciones} \\
-        \hline
-        OpenTelemetry & Instrumentación & Estándar abierto, integración con múltiples backends & Curva de aprendizaje inicial \\
-        \hline
-        Prometheus & Métricas & Alta eficiencia, soporte Kubernetes & No centraliza logs ni trazas \\
-        \hline
-        Grafana & Visualización & Dashboards flexibles, soporte multifuente & Necesita otras herramientas para trazas/logs \\
-        \hline
-        Jaeger & Trazabilidad & Visualización de trazas distribuidas & Depende de la correcta instrumentación \\
-        \hline
-    \end{tabular}
-    \vspace{0.2cm}
-    \footnotesize{Fuente: elaboración propia a partir de documentación oficial de las herramientas.}
-\end{table}
+\begin{table}[H]
+  \centering
+  \caption{Comparativa de tecnologías de observabilidad. Fuente: elaboración propia.}
+  \label{tab:comparativa-tecnologias}
+  \small
+  \begin{tabularx}{\textwidth}{%
+  >{\raggedright\arraybackslash}X
+  >{\raggedright\arraybackslash}X
+  >{\raggedright\arraybackslash}X
+  >{\raggedright\arraybackslash}X}
+  \toprule
+  \textbf{Herramienta} &
+  \textbf{Función} &
+  \textbf{Ventajas} &
+  \textbf{Limitaciones} \\
+  \midrule
+  OpenTelemetry &
+  Instrumentación &
+  Estándar abierto, integración con múltiples backends &
+  Curva de aprendizaje inicial \\
+  \midrule
+  Prometheus &
+  Métricas &
+  Alta eficiencia y soporte nativo para Kubernetes &
+  No centraliza logs ni trazas \\
+  \midrule
+  Grafana &
+  Visualización &
+  Dashboards flexibles y soporte multifuente &
+  Necesita herramientas adicionales para trazas y logs \\
+  \midrule
+  Jaeger &
+  Trazabilidad &
+  Visualización clara de trazas distribuidas &
+  Dependencia de una correcta instrumentación \\
+  \bottomrule
+  \end{tabularx}
+\end{table}  
 
 La combinación de estas tecnologías cubre de manera integral los retos identificados:
 
@@ -180,28 +198,32 @@ Los requisitos no funcionales definen las propiedades de calidad del sistema, as
 Para tener una visión consolidada de los requisitos, se puede presentar la siguiente tabla:
 
 \begin{table}[H]
-\centering
-\caption{Resumen de requisitos funcionales y no funcionales del prototipo de observabilidad}
-\label{tab:requisitos}
-\begin{tabular}{|l|p{10cm}|}
-\hline
-\textbf{ID} & \textbf{Descripción} \\
-\hline
-RF1 & Recolección de métricas de CPU, memoria, tiempos de respuesta y errores. \\
-RF2 & Centralización de logs de todos los microservicios. \\
-RF3 & Trazabilidad distribuida de solicitudes a través de microservicios. \\
-RF4 & Dashboards interactivos para métricas y trazas en tiempo real. \\
-RF5 & Alertas automáticas ante eventos críticos. \\
-RF6 & Despliegue reproducible mediante Helm, Ansible y CI/CD. \\
-RNF1 & Escalabilidad ante incremento de microservicios y datos. \\
-RNF2 & Alta disponibilidad de los componentes de observabilidad. \\
-RNF3 & Seguridad de datos mediante control de acceso y cifrado. \\
-RNF4 & Reproducibilidad de despliegues en distintos entornos. \\
-RNF5 & Facilidad de mantenimiento y documentación completa. \\
-RNF6 & Rendimiento optimizado sin afectar los microservicios. \\
-\hline
-\end{tabular}
-\end{table}
+  \centering
+  \caption{Resumen de requisitos funcionales y no funcionales del prototipo de observabilidad. Fuente: elaboración propia.}
+  \label{tab:requisitos}
+  \small
+  \begin{tabularx}{\textwidth}{%
+  >{\raggedright\arraybackslash}l
+  >{\raggedright\arraybackslash}X}
+  \toprule
+  \textbf{ID} &
+  \textbf{Descripción} \\
+  \midrule
+  RF1 & Recolección de métricas de CPU, memoria, tiempos de respuesta y errores. \\
+  RF2 & Centralización de logs de todos los microservicios. \\
+  RF3 & Trazabilidad distribuida de solicitudes a través de microservicios. \\
+  RF4 & Dashboards interactivos para métricas y trazas en tiempo real. \\
+  RF5 & Alertas automáticas ante eventos críticos. \\
+  RF6 & Despliegue reproducible mediante Helm, Ansible y CI/CD. \\
+  RNF1 & Escalabilidad ante incremento de microservicios y datos. \\
+  RNF2 & Alta disponibilidad de los componentes de observabilidad. \\
+  RNF3 & Seguridad de datos mediante control de acceso y cifrado. \\
+  RNF4 & Reproducibilidad de despliegues en distintos entornos. \\
+  RNF5 & Facilidad de mantenimiento y documentación completa. \\
+  RNF6 & Rendimiento optimizado sin afectar los microservicios. \\
+  \bottomrule
+  \end{tabularx}
+\end{table}  
 
 \section{Descripción del sistema desarrollado e implementación}\label{sec:implementacion}
 
@@ -418,7 +440,7 @@ spec:
 
 \subsection{Metodología de desarrollo y automatización}
 
-Se siguió un enfoque iterativo con entregas semanales que incluían desarrollo, despliegue y documentación. Esto permitió:
+Se siguió un enfoque iterativo, con entregas semanales que incluían desarrollo, despliegue y documentación. Esto permitió:
 
 \begin{itemize}
     \item Validar la correcta instrumentación de los microservicios.
@@ -428,26 +450,27 @@ Se siguió un enfoque iterativo con entregas semanales que incluían desarrollo,
 
 \paragraph{Automatización y CI/CD}\mbox{}
 
-El despliegue inicial se realizó en Minikube de forma manual, pero el prototipo ya cuenta con automatización implementada mediante herramientas DevOps:
+El prototipo integra desde esta entrega la automatización del despliegue y la gestión del entorno mediante herramientas DevOps:
 
 \begin{itemize}
-    \item \textbf{Helm:} empaqueta todos los recursos de Kubernetes (Deployments, Services, ConfigMaps) en un solo \texttt{chart}, permitiendo despliegues reproducibles con un solo comando.
-    \item \textbf{Ansible:} se utiliza para preparar el entorno local, instalar dependencias y ejecutar despliegues de Helm de manera automatizada.
-    \item \textbf{CI/CD local:} mediante GitHub Actions, se ejecutan pruebas, se construyen imágenes Docker y se despliega automáticamente sobre Minikube, demostrando la viabilidad del flujo de integración y entrega continua.
+    \item \textbf{Helm:} Todos los recursos de Kubernetes (Deployments, Services, ConfigMaps) están empaquetados en un \texttt{chart} Helm, lo que permite desplegar el sistema completo con un solo comando, asegurando consistencia y reproducibilidad.
+    \item \textbf{Ansible:} Se utiliza para preparar el entorno local, instalar dependencias necesarias y ejecutar los despliegues de Helm de manera automatizada, reduciendo errores manuales y facilitando la replicación.
+    \item \textbf{CI/CD local:} Se ha configurado un flujo básico de integración continua que permite construir imágenes Docker y desplegar automáticamente sobre Minikube, demostrando la viabilidad del ciclo de integración y entrega continua.
 \end{itemize}
 
-Este enfoque asegura consistencia entre entornos, reduce errores humanos y documenta todos los pasos necesarios para reproducir la plataforma de forma confiable.
+Este enfoque no solo mejora la eficiencia, sino que también asegura consistencia entre entornos y mantiene documentación actualizada de todos los pasos necesarios para reproducir la plataforma.
 
 \paragraph{Reflexión y limitaciones}\mbox{}
 
-El entorno local con Minikube permite experimentar y validar la instrumentación, visualización y trazabilidad. La automatización con Helm y Ansible ya se encuentra configurada y probada, aunque el entorno sigue presentando algunas limitaciones típicas de un clúster local:
+El entorno local con Minikube permite experimentar y validar la instrumentación, visualización y trazabilidad. No obstante, presenta algunas limitaciones:
 
 \begin{itemize}
     \item No refleja completamente la escalabilidad ni la tolerancia a fallos de un clúster de producción en la nube.
     \item Algunos recursos, como almacenamiento persistente y networking avanzado, deben simularse o adaptarse.
+    \item La integración de Helm y Ansible ya está preparada y estructurada, pero su uso completo en entornos más grandes podría requerir ajustes adicionales.
 \end{itemize}
 
-El prototipo proporciona así una base sólida para futuras ampliaciones, incluyendo despliegues en entornos en la nube, integración de alertas avanzadas y análisis predictivo de métricas y trazas.
+Gracias a esta metodología, el prototipo proporciona una base sólida para futuras ampliaciones, incluyendo despliegues en entornos en la nube, integración de alertas avanzadas y análisis predictivo de métricas y trazas.
 
 \section{Evaluación y pruebas}
 
