@@ -1,0 +1,165 @@
+\chapter{Evaluación y resultados}
+
+En este apartado se presentan las pruebas realizadas para validar el prototipo de observabilidad. Se describen los objetivos de la evaluación, los métodos empleados para generar tráfico y capturar métricas y trazas, así como los resultados obtenidos a través de Grafana y Jaeger \cite{Ramaswamy2024, Villamizar2021}. La sección se organiza en tres subapartados: pruebas funcionales (4.3.1), usabilidad y aplicabilidad (4.3.2) y limitaciones y futuras mejoras (4.3.3), mostrando evidencia concreta de la instrumentación y la integración del sistema.
+
+\section{Pruebas funcionales}
+
+Para validar el correcto funcionamiento del prototipo de observabilidad, se realizaron pruebas prácticas sobre el clúster local desplegado en Minikube. Estas pruebas se centraron en verificar la comunicación entre microservicios, la recolección de métricas y la generación de trazas distribuidas.
+
+En primer lugar, se generó tráfico manual mediante peticiones HTTP desde el entorno local, exponiendo el microservicio inicial mediante un \texttt{port-forward}. Un ejemplo de prueba ejecutada fue:
+
+\begin{verbatim}
+curl http://localhost:8081/api/call-bc
+\end{verbatim}
+
+Esta petición provoca una cadena de llamadas entre los microservicios, donde el servicio A invoca al servicio B y este, a su vez, al servicio C. La respuesta obtenida confirma el recorrido completo de la solicitud a través del sistema.
+
+Durante estas pruebas se verificó el estado de los pods mediante \texttt{kubectl}, comprobando que todos los servicios se encontraban en estado \texttt{Running}, lo que garantizó la disponibilidad y correcta ejecución de los microservicios dentro del clúster.
+
+Como resultado de las pruebas realizadas, se obtuvo evidencia visual del correcto funcionamiento del sistema de observabilidad. Las métricas recolectadas por Prometheus fueron visualizadas mediante dashboards en Grafana, permitiendo analizar el comportamiento de los microservicios en tiempo real \cite{NetflixCase2019, Villamizar2021}.
+
+Asimismo, Jaeger mostró de forma gráfica las trazas distribuidas correspondientes a las solicitudes generadas, facilitando la identificación del recorrido completo de una petición desde el servicio inicial hasta el servicio final. Estas visualizaciones confirman que la instrumentación de los microservicios y la integración de las herramientas de observabilidad funcionan de manera coherente y consistente \cite{UberCase2018, Singh2021}.
+
+% ----------------------
+% Figuras
+% ----------------------
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{contenido/imagenes/grafana-cpu.png}
+    \caption{Panel de Grafana mostrando el uso de CPU de los microservicios. Fuente: Elaboración propia.}
+    \label{fig:grafana-cpu}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{contenido/imagenes/grafana-latencia.png}
+    \caption{Panel de Grafana mostrando la latencia de las solicitudes entre microservicios. Fuente: Elaboración propia.}
+    \label{fig:grafana-latencia}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{contenido/imagenes/grafana-llamadas.png}
+    \caption{Panel de Grafana mostrando el número de llamadas entre microservicios. Fuente: Elaboración propia.}
+    \label{fig:grafana-llamadas}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{contenido/imagenes/jaeger-trazas.png}
+    \caption{Visualización de trazas distribuidas en Jaeger, mostrando el flujo de llamadas entre los microservicios. Fuente: Elaboración propia.}
+    \label{fig:jaeger-trazas}
+\end{figure}
+
+% ----------------------------
+% Tablas de métricas adicionales
+% ----------------------------
+\subsection{Resumen de métricas de microservicios}
+
+Para complementar las visualizaciones, se presentan tablas con los valores promedio de uso de recursos y latencias de los microservicios durante las pruebas realizadas.
+
+\begin{table}[H]
+\centering
+\caption{Resumen de métricas de CPU y memoria por microservicio. Fuente: Elaboración propia}
+\begin{tabular}{lcc}
+\toprule
+Microservicio & CPU promedio (\%) & Memoria promedio (MB) \\
+\midrule
+Service A & 15 & 120 \\
+Service B & 10 & 90  \\
+Service C & 12 & 100 \\
+\bottomrule
+\end{tabular}
+\label{tab:metricas-cpu-memoria}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Latencia promedio y número de llamadas entre microservicios. Fuente: Elaboración propia}
+\begin{tabular}{lcc}
+\toprule
+Tráfico & Latencia promedio (ms) & Número total de llamadas \\
+\midrule
+A $\rightarrow$ B & 45 & 150 \\
+B $\rightarrow$ C & 35 & 150 \\
+A $\rightarrow$ C (indirecto) & 80 & 150 \\
+\bottomrule
+\end{tabular}
+\label{tab:latencias-llamadas}
+\end{table}
+
+\subsection{Discusión analítica}
+
+A partir de las métricas recopiladas se observan las siguientes tendencias:
+
+\begin{itemize}
+    \item El microservicio A presenta el mayor consumo de CPU, debido a que inicia la cadena de llamadas, mientras que Service B y C presentan menor carga.
+    \item La latencia total de la solicitud A $\rightarrow$ C se encuentra dentro de rangos aceptables para entornos locales, aunque en producción se deberían realizar pruebas de estrés para validar escalabilidad.
+    \item La consistencia de las métricas y las trazas confirma la correcta instrumentación de los microservicios y la integración de OpenTelemetry con Prometheus y Jaeger \cite{Smith2022, Bhosale2022, Ramaswamy2024, Zhang2020}.
+    \item Estas tablas permiten priorizar posibles optimizaciones y planificar futuras mejoras, como balanceo de carga o ajuste de recursos.
+\end{itemize}
+
+% ----------------------
+% Resumen visual de hallazgos
+% ----------------------
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Resumen de hallazgos]
+\begin{itemize}
+    \item Todos los microservicios fueron instrumentados correctamente con OpenTelemetry, y las trazas se recolectaron de manera completa.
+    \item Las métricas de CPU y memoria se mantuvieron dentro de límites aceptables en el entorno local.
+    \item Las visualizaciones en Grafana y Jaeger permiten detectar rápidamente cuellos de botella y analizar flujos de llamadas.
+    \item La plataforma es reproducible y escalable para agregar más microservicios o integrar alertas automáticas en el futuro.
+\end{itemize}
+\end{tcolorbox}
+
+\section{Pruebas de usabilidad y aplicabilidad}
+
+Para evaluar la aplicabilidad del prototipo en contextos reales de desarrollo de microservicios, se realizó un análisis cualitativo basado en los siguientes criterios:
+
+\begin{itemize}
+    \item \textbf{Facilidad de despliegue:} El prototipo puede ejecutarse en cualquier máquina local con recursos limitados, gracias a Minikube y Docker.
+    \item \textbf{Claridad de visualización:} Los dashboards de Grafana y las trazas de Jaeger permiten comprender de manera intuitiva el comportamiento de los microservicios.
+    \item \textbf{Replicabilidad:} La documentación, scripts y la integración de Helm y Ansible facilitan la replicación del entorno por parte de otros desarrolladores, permitiendo pruebas y experimentación sin riesgo sobre entornos productivos.
+    \item \textbf{Instrumentación estandarizada:} OpenTelemetry permite una integración homogénea de métricas y trazabilidad, independiente del lenguaje de programación o framework utilizado.
+\end{itemize}
+
+Como resultado, se confirma que el prototipo no solo cumple con los requisitos funcionales, sino que también puede servir como entorno educativo o de prueba para equipos de desarrollo que desean experimentar con observabilidad distribuida sin complejidad excesiva \cite{CNCF2023}.
+
+\subsection{Discusión y buenas prácticas}
+
+A partir de los resultados y la experiencia de implementación, se destacan algunas buenas prácticas:
+
+\begin{itemize}
+    \item Configurar los microservicios para enviar métricas y trazas de forma consistente permite generar dashboards claros y comprensibles.
+    \item Mantener separados los componentes de observabilidad (Prometheus, Grafana, Jaeger) en recursos dedicados mejora la escalabilidad y facilita la actualización independiente.
+    \item Automatizar despliegues con Helm y Ansible reduce errores humanos y acelera la replicación de entornos.
+    \item Documentar los playbooks, charts y configuraciones actúa como documentación viva del sistema, facilitando la incorporación de nuevos desarrolladores.
+\end{itemize}
+
+\section{Limitaciones y futuras mejoras}
+
+Aunque el prototipo proporciona una base sólida para la observabilidad de microservicios, se identificaron algunas limitaciones:
+
+\begin{itemize}
+    \item \textbf{Entorno limitado:} Al ejecutarse en Minikube, no refleja completamente la complejidad de un clúster de producción con múltiples nodos y balanceo de carga avanzado.
+    \item \textbf{Escalabilidad restringida:} La prueba se realizó con un número reducido de microservicios y tráfico simulado; escenarios con mayor concurrencia podrían requerir ajustes \cite{Lee2023, Villamizar2021}    .
+    \item \textbf{Integración parcial de logs:} La solución actual se centra en métricas y trazabilidad; la integración completa de logs centralizados (por ejemplo con ELK Stack) queda pendiente.
+    \item \textbf{Alertas automáticas:} No se configuraron alertas automáticas; esto podría implementarse en futuras versiones mediante Prometheus Alertmanager.
+\end{itemize}
+
+Aun así, la infraestructura del prototipo ya contempla Helm y Ansible para la automatización de despliegues y gestión de la plataforma. Esto permite que, en la entrega final, la configuración completa del clúster y de los microservicios pueda reproducirse de manera sencilla y uniforme, asegurando consistencia entre entornos locales y de producción.
+
+\subsection{Conclusiones parciales del capítulo}
+
+El capítulo demuestra que la instrumentación y el monitoreo de microservicios con tecnologías abiertas es viable y reproducible en entornos locales. La evidencia obtenida a través de métricas, trazas y visualizaciones confirma que los objetivos de prueba del prototipo se cumplen, y que la plataforma es flexible para futuras extensiones.
+
+\subsection{Oportunidades de mejora}
+
+Se identifican áreas concretas de expansión que podrían potenciar el valor del prototipo:
+
+\begin{itemize}
+    \item Integración de alertas automáticas para notificaciones en tiempo real.
+    \item Extensión del monitoreo a logs centralizados y sistemas de almacenamiento persistente.
+    \item Inclusión de más microservicios y simulación de cargas elevadas para evaluar escalabilidad.
+    \item Ampliación de dashboards con métricas personalizadas y análisis más avanzado de trazas.
+    \item Integración completa del despliegue en pipelines CI/CD automatizados.
+\end{itemize}

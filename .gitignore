@@ -48,3 +48,7 @@ Thumbs.db
 build/
 output/
 .vscode/
+
+*.aux
+*.bcf
+*.xdv

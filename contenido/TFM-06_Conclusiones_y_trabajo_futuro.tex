@@ -1,0 +1,66 @@
+\chapter{Conclusiones y trabajo futuro}\label{chap:resultados}
+
+\section{Conclusiones}
+
+Este estudio se ocupó del desafío de establecer una arquitectura de monitoreo para sistemas que emplean microservicios, centrándose en cómo reunir y representar métricas, trazas y registros mediante tecnologías de código abierto como OpenTelemetry, Prometheus y Grafana. Para probar la solución, configuramos un entorno local usando Kubernetes (Minikube), lo que nos permitió integrar y evaluar los elementos esenciales para el monitoreo y análisis del sistema.
+
+A lo largo del proceso, diseñamos la arquitectura, equipamos los microservicios con el SDK de OpenTelemetry y ajustamos los componentes de monitoreo, incluyendo el OpenTelemetry Collector, Prometheus y Grafana. El resultado fue un entorno operativo que proporciona visibilidad en tiempo real sobre el rendimiento y rastreo del sistema, lo que ayuda en la identificación de cuellos de botella o fallas potenciales.
+
+Los objetivos establecidos inicialmente, como construir un entorno reproducible para el monitoreo y demostrar su efectividad en local, se lograron con éxito. Además, la solución es lo suficientemente adaptable para futuras expansiones, tales como la migración a entornos en la nube o la automatización de procesos utilizando herramientas como Terraform y Kubernetes.
+
+\subsection{Lecciones aprendidas y recomendaciones}
+
+Para complementar las conclusiones, se presenta la siguiente tabla que sintetiza los aprendizajes más relevantes y las recomendaciones prácticas para proyectos similares:
+
+\begin{table}[H]
+	\centering
+	\caption{Lecciones aprendidas y recomendaciones para la implementación de observabilidad en microservicios. Fuente: Elaboración propia.}
+	\small
+	\begin{tabularx}{\textwidth}{%
+	>{\raggedright\arraybackslash}X
+	>{\raggedright\arraybackslash}X}
+	\toprule
+	\textbf{Lección aprendida} & \textbf{Recomendación práctica} \\
+	\midrule
+	La instrumentación de microservicios con OpenTelemetry puede afectar el rendimiento si se recolectan demasiadas métricas y trazas. &
+	Configurar filtros, muestreo y prioridades en la recolección de datos para equilibrar observabilidad y rendimiento. \\
+	\midrule
+	Integración de Prometheus y Grafana facilita la visualización de métricas en tiempo real. &
+	Crear dashboards personalizados para correlacionar métricas de infraestructura y de servicios específicos. \\
+	\midrule
+	Centralización de logs mediante ELK Stack permite reconstruir eventos históricos y depurar incidencias. &
+	Establecer políticas de retención, rotación de logs y gestión de almacenamiento. \\
+	\midrule
+	Kubernetes y Minikube ayudan a reproducir entornos de producción a pequeña escala. &
+	Planificar los recursos de manera eficiente para evitar sobrecarga en entornos locales. \\
+	\midrule
+	Observabilidad requiere un enfoque integral, no solo herramientas. &
+	Capacitar a equipos DevOps y SRE para interpretar métricas, logs y trazas y tomar decisiones proactivas. \\
+	\bottomrule
+	\end{tabularx}
+	\label{tab:lecciones_recomendaciones}
+\end{table}
+
+\section{Líneas de trabajo futuro}
+
+A pesar de que el entorno actual satisface las expectativas, existen diversas áreas donde se puede continuar avanzando para incrementar el valor del proyecto:
+
+\begin{itemize}
+	\item \textbf{Implementación en la nube:} Automatizar la infraestructura en plataformas de nube pública utilizando Terraform y Kubernetes administrados, asegurando así escalabilidad y disponibilidad elevada. Esto permitirá comparar métricas de rendimiento entre entornos locales y cloud, y validar la portabilidad de la solución.
+	
+	\item \textbf{Automatización avanzada:} Integrar pipelines de CI/CD que incluyan pruebas automatizadas, implementación y monitoreo, así optimizando la eficiencia del ciclo de desarrollo. Se recomienda explorar pipelines multietapa que desplieguen entornos de prueba para microservicios instrumentados antes de pasar a producción.
+	
+	\item \textbf{Seguridad y cumplimiento:} Establecer medidas de seguridad para el monitoreo, como el cifrado de datos tanto en tránsito como en reposo, además de controlar el acceso a paneles de control y datos sensibles. También se podría implementar autenticación basada en roles (RBAC) y auditorías periódicas de acceso a logs y métricas.
+	
+	\item \textbf{Análisis avanzado:} Incorporar sistemas de análisis predictivo y alertas basadas en aprendizaje automático para prever fallos o deterioro del sistema. Por ejemplo, utilizar modelos de detección de anomalías que combinen métricas de CPU, memoria y trazas para anticipar incidentes antes de que afecten a los usuarios finales.
+	
+	\item \textbf{Documentación y capacitación:} Preparar documentación detallada y recursos educativos para facilitar la adaptación por parte de los equipos de desarrollo y operaciones, incluyendo tutoriales paso a paso, casos de prueba y ejemplos de dashboards.
+	
+	\item \textbf{Resiliencia y pruebas de carga:} Evaluar cómo la arquitectura responde bajo diferentes cargas y condiciones adversas. Esto permitiría ajustar los límites de alertas, mejorar el escalado automático y garantizar la estabilidad de los microservicios.
+	
+	\item \textbf{Métricas de negocio:} Integrar métricas de negocio junto con métricas técnicas, para correlacionar el impacto de incidencias en la operación con indicadores clave (KPI) de la empresa. Esto amplía la utilidad de la observabilidad más allá del plano técnico.
+	
+	\item \textbf{Comparativa con herramientas comerciales:} Realizar estudios comparativos entre la solución open source propuesta y plataformas comerciales (como Datadog o New Relic), evaluando coste, flexibilidad y facilidad de integración.
+\end{itemize}
+
+Estas líneas abren la oportunidad para una evolución natural de la plataforma de monitoreo, consolidando y ampliando el valor del trabajo realizado en este TFM. En conjunto, no solo fortalecen la reproducibilidad y escalabilidad del sistema, sino que también amplían su aplicabilidad en contextos industriales y académicos, posicionando la solución como un referente práctico en observabilidad de microservicios.

@@ -448,112 +448,81 @@ Se siguió un enfoque iterativo, con entregas semanales que incluían desarrollo
     \item Documentar procedimientos de despliegue y operación del prototipo.
 \end{itemize}
 
-\paragraph{Automatización y CI/CD}\mbox{}
+\paragraph{Automatización con Helm y Ansible}\mbox{}
 
-El prototipo integra desde esta entrega la automatización del despliegue y la gestión del entorno mediante herramientas DevOps:
+La automatización constituye un componente crítico para garantizar la reproducibilidad, consistencia y mantenimiento eficiente de la plataforma de observabilidad. Se adoptaron las siguientes prácticas:
 
 \begin{itemize}
-    \item \textbf{Helm:} Todos los recursos de Kubernetes (Deployments, Services, ConfigMaps) están empaquetados en un \texttt{chart} Helm, lo que permite desplegar el sistema completo con un solo comando, asegurando consistencia y reproducibilidad.
-    \item \textbf{Ansible:} Se utiliza para preparar el entorno local, instalar dependencias necesarias y ejecutar los despliegues de Helm de manera automatizada, reduciendo errores manuales y facilitando la replicación.
-    \item \textbf{CI/CD local:} Se ha configurado un flujo básico de integración continua que permite construir imágenes Docker y desplegar automáticamente sobre Minikube, demostrando la viabilidad del ciclo de integración y entrega continua.
-\end{itemize}
+    \item \textbf{Helm:} Todos los recursos de Kubernetes (Deployments, Services, ConfigMaps) están empaquetados en \textit{charts} Helm. Esto permite desplegar el sistema completo mediante un solo comando, asegurando uniformidad y facilitando actualizaciones y retrocesos (\textit{rollbacks}). La estructura de Helm en el proyecto sigue la organización de los microservicios y herramientas de observabilidad, incluyendo carpetas separadas para cada componente:
 
-Este enfoque no solo mejora la eficiencia, sino que también asegura consistencia entre entornos y mantiene documentación actualizada de todos los pasos necesarios para reproducir la plataforma.
+\begin{verbatim}
+helm/
+├── microservices/
+├── prometheus/
+├── grafana/
+└── jaeger/
+\end{verbatim}
+
+    \item \textbf{Ansible:} Se utiliza para preparar el entorno local con Minikube, instalar dependencias necesarias (Docker, kubectl, Helm) y ejecutar los despliegues de Helm de manera automatizada. La estructura de Ansible incluye un \texttt{inventory.ini} y roles con tareas específicas, por ejemplo:
+
+\begin{verbatim}
+roles/minikube/tasks/main.yml
+- name: Iniciar Minikube
+  command: minikube start
+
+- name: Desplegar microservicios con Helm
+  command: helm install microservices ./helm/microservices
+\end{verbatim}
+
+Esto permite ejecutar todo el despliegue desde cero con un solo comando, minimizando errores manuales y asegurando que cualquier entorno local pueda replicar la plataforma.
+
+    \item \textbf{CI con GitHub Actions:} Se configuró un flujo de integración continua básico para construir automáticamente las imágenes Docker al detectar cambios en el repositorio:
+
+\begin{verbatim}
+name: CI TFM Observabilidad
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Docker images
+        run: |
+          docker build -t service-a ./microservices/service-a
+          docker build -t service-b ./microservices/service-b
+          docker build -t service-c ./microservices/service-c
+\end{verbatim}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{contenido/imagenes/flujo_ansible.png}
+	\caption{Arquitectura de despliegue y automatización del prototipo de observabilidad usando GitHub Actions, Docker, Ansible, Helm y Minikube. Fuente: Elaboración propia.}
+	\label{fig:flujo-ansible}
+\end{figure}
+
+Aunque actualmente el workflow construye las imágenes, el despliegue automatizado en Minikube y la ejecución de pruebas funcionales se realiza mediante Ansible y Helm, dejando abierta la posibilidad de integrar estos pasos directamente en el pipeline CI/CD en futuras iteraciones.
+\end{itemize} 
+
+\paragraph{Beneficios de la automatización}\mbox{}
+
+El enfoque combinado de Helm y Ansible aporta varias ventajas:
+
+\begin{itemize}
+    \item \textbf{Reproducibilidad:} cualquier entorno local puede replicar el sistema de forma idéntica.
+    \item \textbf{Escalabilidad:} permite agregar nuevos microservicios o herramientas de observabilidad sin afectar la plataforma existente.
+    \item \textbf{Reducción de errores humanos:} minimiza tareas manuales y repetitivas durante el despliegue.
+    \item \textbf{Documentación operativa viva:} los charts y playbooks actúan como documentación de despliegue y configuración.
+\end{itemize}
 
 \paragraph{Reflexión y limitaciones}\mbox{}
 
 El entorno local con Minikube permite experimentar y validar la instrumentación, visualización y trazabilidad. No obstante, presenta algunas limitaciones:
 
 \begin{itemize}
-    \item No refleja completamente la escalabilidad ni la tolerancia a fallos de un clúster de producción en la nube.
-    \item Algunos recursos, como almacenamiento persistente y networking avanzado, deben simularse o adaptarse.
-    \item La integración de Helm y Ansible ya está preparada y estructurada, pero su uso completo en entornos más grandes podría requerir ajustes adicionales.
+    \item No refleja completamente la escalabilidad ni la tolerancia a fallos de un clúster de producción.
+    \item El flujo CI/CD aún no automatiza el despliegue completo ni las pruebas funcionales directamente en GitHub Actions.
+    \item Algunos recursos avanzados de Kubernetes, como volúmenes persistentes distribuidos o networking complejo, requieren adaptación adicional.
 \end{itemize}
 
-Gracias a esta metodología, el prototipo proporciona una base sólida para futuras ampliaciones, incluyendo despliegues en entornos en la nube, integración de alertas avanzadas y análisis predictivo de métricas y trazas.
-
-\section{Evaluación y pruebas}
-
-En este apartado se presentan las pruebas realizadas para validar el prototipo de observabilidad. Se describen los objetivos de la evaluación, los métodos empleados para generar tráfico y capturar métricas y trazas, así como los resultados obtenidos a través de Grafana y Jaeger. La sección se organiza en tres subapartados: pruebas funcionales (4.3.1), usabilidad y aplicabilidad (4.3.2) y limitaciones y futuras mejoras (4.3.3), mostrando evidencia concreta de la instrumentación y la integración del sistema.
-
-\subsection{Pruebas funcionales}
-
-Para validar el correcto funcionamiento del prototipo de observabilidad, se realizaron pruebas prácticas sobre el clúster local desplegado en Minikube. Estas pruebas se centraron en verificar la comunicación entre microservicios, la recolección de métricas y la generación de trazas distribuidas.
-
-En primer lugar, se generó tráfico manual mediante peticiones HTTP desde el entorno local, exponiendo el microservicio inicial mediante un \texttt{port-forward}. Un ejemplo de prueba ejecutada fue:
-
-\begin{verbatim}
-curl http://localhost:8081/api/call-bc
-\end{verbatim}
-
-Esta petición provoca una cadena de llamadas entre los microservicios, donde el servicio A invoca al servicio B y este, a su vez, al servicio C. La respuesta obtenida confirma el recorrido completo de la solicitud a través del sistema.
-
-Durante estas pruebas se verificó el estado de los pods mediante \texttt{kubectl}, comprobando que todos los servicios se encontraban en estado \texttt{Running}, lo que garantizó la disponibilidad y correcta ejecución de los microservicios dentro del clúster.
-
-Como resultado de las pruebas realizadas, se obtuvo evidencia visual del correcto funcionamiento del sistema de observabilidad. Las métricas recolectadas por Prometheus fueron visualizadas mediante dashboards en Grafana, permitiendo analizar el comportamiento de los microservicios en tiempo real.
-
-Asimismo, Jaeger mostró de forma gráfica las trazas distribuidas correspondientes a las solicitudes generadas, facilitando la identificación del recorrido completo de una petición desde el servicio inicial hasta el servicio final. Estas visualizaciones confirman que la instrumentación de los microservicios y la integración de las herramientas de observabilidad funcionan de manera coherente y consistente.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{contenido/imagenes/grafana-cpu.png}
-    \caption{Panel de Grafana mostrando el uso de CPU de los microservicios. Fuente: Elaboración propia.}
-    \label{fig:grafana-cpu}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{contenido/imagenes/grafana-latencia.png}
-    \caption{Panel de Grafana mostrando la latencia de las solicitudes entre microservicios. Fuente: Elaboración propia.}
-    \label{fig:grafana-latencia}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{contenido/imagenes/grafana-llamadas.png}
-    \caption{Panel de Grafana mostrando el número de llamadas entre microservicios. Fuente: Elaboración propia.}
-    \label{fig:grafana-llamadas}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{contenido/imagenes/jaeger-trazas.png}
-    \caption{Visualización de trazas distribuidas en Jaeger, mostrando el flujo de llamadas entre los microservicios. Fuente: Elaboración propia.}
-    \label{fig:jaeger-trazas}
-\end{figure}
-
-\subsection{Pruebas de usabilidad y aplicabilidad}
-
-Para evaluar la aplicabilidad del prototipo en contextos reales de desarrollo de microservicios, se realizó un análisis cualitativo basado en los siguientes criterios:
-
-\begin{itemize}
-    \item \textbf{Facilidad de despliegue:} El prototipo puede ejecutarse en cualquier máquina local con recursos limitados, gracias a Minikube y Docker.
-    \item \textbf{Claridad de visualización:} Los dashboards de Grafana y las trazas de Jaeger permiten comprender de manera intuitiva el comportamiento de los microservicios.
-    \item \textbf{Replicabilidad:} La documentación, scripts y la integración de Helm y Ansible facilitan la replicación del entorno por parte de otros desarrolladores, permitiendo pruebas y experimentación sin riesgo sobre entornos productivos.
-    \item \textbf{Instrumentación estandarizada:} OpenTelemetry permite una integración homogénea de métricas y trazabilidad, independiente del lenguaje de programación o framework utilizado.
-\end{itemize}
-
-Como resultado, se confirma que el prototipo no solo cumple con los requisitos funcionales, sino que también puede servir como entorno educativo o de prueba para equipos de desarrollo que desean experimentar con observabilidad distribuida sin complejidad excesiva.
-
-\subsection{Limitaciones y futuras mejoras}
-
-Aunque el prototipo proporciona una base sólida para la observabilidad de microservicios, se identificaron algunas limitaciones:
-
-\begin{itemize}
-    \item \textbf{Entorno limitado:} Al ejecutarse en Minikube, no refleja completamente la complejidad de un clúster de producción con múltiples nodos y balanceo de carga avanzado.
-    \item \textbf{Escalabilidad restringida:} La prueba se realizó con un número reducido de microservicios y tráfico simulado; escenarios con mayor concurrencia podrían requerir ajustes.
-    \item \textbf{Integración parcial de logs:} La solución actual se centra en métricas y trazabilidad; la integración completa de logs centralizados (por ejemplo con ELK Stack) queda pendiente.
-    \item \textbf{Alertas automáticas:} No se configuraron alertas automáticas; esto podría implementarse en futuras versiones mediante Prometheus Alertmanager.
-\end{itemize}
-
-Aun así, la infraestructura del prototipo ya contempla Helm y Ansible para la automatización de despliegues y gestión de la plataforma. Esto permite que, en la entrega final, la configuración completa del clúster y de los microservicios pueda reproducirse de manera sencilla y uniforme, asegurando consistencia entre entornos locales y de producción.
-
-Oportunidades de mejora y ampliación incluyen:
-
-\begin{itemize}
-    \item Integración de un sistema de alertas automáticas.
-    \item Adición de más microservicios y pruebas de escalabilidad.
-    \item Extensión de dashboards y métricas personalizadas.
-    \item Instrumentación de logs centralizados.
-    \item Ajustes y validación final de despliegues automatizados con Helm y Ansible.
-\end{itemize}
+Gracias a esta metodología, el prototipo proporciona una base sólida para futuras ampliaciones, incluyendo despliegues en entornos en la nube, integración de alertas automáticas y pipelines CI/CD más completos que incluyan despliegue y pruebas automáticas.
