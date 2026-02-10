@@ -448,6 +448,110 @@ Se siguió un enfoque iterativo, con entregas semanales que incluían desarrollo
     \item Documentar procedimientos de despliegue y operación del prototipo.
 \end{itemize}
 
+\section{Integración del stack de logging ELK}\label{sec:elk}
+
+Para complementar la observabilidad mediante métricas y trazabilidad, se incorporó un sistema de logging centralizado basado en ELK Stack (Elasticsearch, Logstash/Kibana) y Filebeat. Esta solución permite recolectar, centralizar y visualizar los logs generados por cada microservicio, proporcionando una visión integral de los eventos del sistema en tiempo real.
+
+\subsection{Arquitectura de logging}
+
+La arquitectura implementada sigue el patrón:
+
+\begin{itemize}
+    \item \textbf{Filebeat:} Desplegado como DaemonSet en Kubernetes para recolectar los logs de todos los pods y enviarlos a Elasticsearch.
+    \item \textbf{Elasticsearch:} Almacena, indexa y permite consultas eficientes sobre los logs recibidos.
+    \item \textbf{Kibana:} Permite crear dashboards, búsquedas y visualizaciones de los logs centralizados.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{contenido/imagenes/elk-architecture.png}
+    \caption{Arquitectura de logging centralizado con ELK y Filebeat. Fuente: Elaboración propia.}
+    \label{fig:elk-architecture}
+\end{figure}
+
+\subsection{Despliegue con Helm y Ansible}
+
+El despliegue de ELK se realizó mediante Helm, usando los charts desarrollados para cada componente:
+
+\begin{itemize}
+    \item \texttt{elasticsearch}: Se configuró con almacenamiento persistente y replicas para garantizar disponibilidad y durabilidad de los logs.
+    \item \texttt{kibana}: Se expuso mediante un servicio tipo \texttt{NodePort}, facilitando el acceso local al panel de visualización.
+    \item \texttt{filebeat}: Configurado como DaemonSet para recolectar los logs de los microservicios y enviarlos a Elasticsearch.
+\end{itemize}
+
+El playbook de Ansible se encargó de inicializar Minikube, instalar Helm y aplicar los charts con los valores definidos en los \texttt{values.yaml}, asegurando que la instalación fuera reproducible y coherente en cualquier máquina local.
+
+\subsection{Configuración de Filebeat}
+
+Filebeat se configuró para recolectar logs de todos los microservicios desplegados en Kubernetes. A continuación se muestra un ejemplo simplificado de la sección relevante del \texttt{ConfigMap} de Filebeat:
+
+\begin{verbatim}
+filebeat.inputs:
+- type: container
+  paths:
+    - /var/log/containers/*.log
+  processors:
+    - add_kubernetes_metadata:
+        in_cluster: true
+output.elasticsearch:
+  hosts: ['elasticsearch:9200']
+  username: elastic
+  password: changeme
+\end{verbatim}
+
+Con esta configuración, Filebeat agrega automáticamente metadata de Kubernetes a cada log, permitiendo filtrar por nombre de pod, namespace o etiqueta del microservicio.
+
+\subsection{Integración con microservicios}
+
+Filebeat recolecta logs de los microservicios \texttt{service-a}, \texttt{service-b} y \texttt{service-c}, lo que permite:
+
+\begin{itemize}
+    \item Visualizar en tiempo real los logs de cada servicio individual.
+    \item Filtrar y buscar eventos relevantes, como errores o excepciones.
+    \item Correlacionar logs con métricas de Prometheus y trazas de Jaeger para un análisis integral.
+\end{itemize}
+
+\subsection{Ejemplo de métricas y logs recolectados}
+
+Durante las pruebas, se registraron logs de operaciones exitosas y errores simulados. A modo de resumen, la Tabla \ref{tab:logs-microservicios} muestra la cantidad de logs recolectados por servicio y su clasificación.
+
+\begin{table}[H]
+\centering
+\caption{Resumen de logs recolectados por microservicio durante la prueba. Fuente: Elaboración propia}
+\begin{tabular}{lcc}
+\toprule
+Microservicio & Total de logs & Logs con error \\
+\midrule
+Service A & 200 & 5 \\
+Service B & 180 & 2 \\
+Service C & 190 & 0 \\
+\bottomrule
+\end{tabular}
+\label{tab:logs-microservicios}
+\end{table}
+
+\subsection{Visualización y dashboards en Kibana}
+
+Kibana se utilizó para generar dashboards que permiten:
+
+\begin{itemize}
+    \item Analizar la frecuencia de errores por microservicio.
+    \item Identificar patrones o anomalías en la ejecución de los servicios.
+    \item Filtrar logs por nivel de severidad, pod o timestamp.
+\end{itemize}
+
+\subsection{Discusión y buenas prácticas}
+
+\begin{itemize}
+    \item Mantener Filebeat actualizado y correctamente configurado para capturar únicamente logs relevantes, evitando sobrecarga en Elasticsearch.
+    \item Definir políticas de retención y rotación de índices en Elasticsearch para optimizar el almacenamiento.
+    \item Correlacionar logs con métricas de Prometheus y trazas de Jaeger para obtener una visión completa del sistema.
+    \item Separar índices por microservicio o por rango temporal mejora la eficiencia de consultas y dashboards.
+    \item La centralización de logs permite detectar fallos de manera rápida y facilita la identificación de cuellos de botella y errores recurrentes.
+\end{itemize}
+
+En conjunto, la integración de ELK Stack proporciona una capa de observabilidad complementaria a Prometheus y Jaeger, ofreciendo visibilidad completa sobre el comportamiento de los microservicios y el estado del sistema en entornos distribuidos.
+
 \paragraph{Automatización con Helm y Ansible}\mbox{}
 
 La automatización constituye un componente crítico para garantizar la reproducibilidad, consistencia y mantenimiento eficiente de la plataforma de observabilidad. Se adoptaron las siguientes prácticas:
