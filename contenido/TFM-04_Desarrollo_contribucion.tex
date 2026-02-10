@@ -75,7 +75,7 @@ Para reforzar la elección de estas tecnologías, se compara brevemente con alte
 
 \begin{table}[H]
   \centering
-  \caption{Comparativa de tecnologías de observabilidad. Fuente: elaboración propia.}
+  \caption{Comparativa de tecnologías de observabilidad.}
   \label{tab:comparativa-tecnologias}
   \small
   \begin{tabularx}{\textwidth}{%
@@ -110,6 +110,7 @@ Para reforzar la elección de estas tecnologías, se compara brevemente con alte
   Dependencia de una correcta instrumentación \\
   \bottomrule
   \end{tabularx}
+  \caption*{\footnotesize Fuente: Elaboración propia.}
 \end{table}  
 
 La combinación de estas tecnologías cubre de manera integral los retos identificados:
@@ -199,7 +200,7 @@ Para tener una visión consolidada de los requisitos, se puede presentar la sigu
 
 \begin{table}[H]
   \centering
-  \caption{Resumen de requisitos funcionales y no funcionales del prototipo de observabilidad. Fuente: elaboración propia.}
+  \caption{Resumen de requisitos funcionales y no funcionales del prototipo de observabilidad.}
   \label{tab:requisitos}
   \small
   \begin{tabularx}{\textwidth}{%
@@ -223,6 +224,7 @@ Para tener una visión consolidada de los requisitos, se puede presentar la sigu
   RNF6 & Rendimiento optimizado sin afectar los microservicios. \\
   \bottomrule
   \end{tabularx}
+  \caption*{\footnotesize Fuente: Elaboración propia.}
 \end{table}  
 
 \section{Descripción del sistema desarrollado e implementación}\label{sec:implementacion}
@@ -255,8 +257,9 @@ La Figura~\ref{fig:arquitectura} muestra la arquitectura del sistema y el flujo 
 
 \begin{figure}[H]
     \centering
+    \caption{Arquitectura simplificada del prototipo en entorno local.}
     \includegraphics[width=0.8\textwidth]{contenido/imagenes/arquitectura-tfm.png}
-    \caption{Arquitectura simplificada del prototipo en entorno local. Fuente: Elaboración propia.}
+    \caption*{\footnotesize Fuente: Elaboración propia.}
     \label{fig:arquitectura}
 \end{figure}
 
@@ -464,8 +467,9 @@ La arquitectura implementada sigue el patrón:
 
 \begin{figure}[H]
     \centering
+    \caption{Arquitectura de logging centralizado con ELK y Filebeat.}
     \includegraphics[width=0.75\textwidth]{contenido/imagenes/elk-architecture.png}
-    \caption{Arquitectura de logging centralizado con ELK y Filebeat. Fuente: Elaboración propia.}
+    \caption*{\footnotesize Fuente: Elaboración propia.}
     \label{fig:elk-architecture}
 \end{figure}
 
@@ -517,7 +521,7 @@ Durante las pruebas, se registraron logs de operaciones exitosas y errores simul
 
 \begin{table}[H]
 \centering
-\caption{Resumen de logs recolectados por microservicio durante la prueba. Fuente: Elaboración propia}
+\caption{Resumen de logs recolectados por microservicio durante la prueba.}
 \begin{tabular}{lcc}
 \toprule
 Microservicio & Total de logs & Logs con error \\
@@ -527,6 +531,7 @@ Service B & 180 & 2 \\
 Service C & 190 & 0 \\
 \bottomrule
 \end{tabular}
+\caption*{\footnotesize Fuente: Elaboración propia.}
 \label{tab:logs-microservicios}
 \end{table}
 
@@ -600,8 +605,9 @@ jobs:
 
 \begin{figure}[H]
 	\centering
+  \caption{Arquitectura de despliegue y automatización del prototipo de observabilidad usando GitHub Actions, Docker, Ansible, Helm y Minikube.}
 	\includegraphics[width=0.8\textwidth]{contenido/imagenes/flujo_ansible.png}
-	\caption{Arquitectura de despliegue y automatización del prototipo de observabilidad usando GitHub Actions, Docker, Ansible, Helm y Minikube. Fuente: Elaboración propia.}
+  \caption*{\footnotesize Fuente: Elaboración propia.}
 	\label{fig:flujo-ansible}
 \end{figure}
 

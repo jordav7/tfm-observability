@@ -25,29 +25,33 @@ Asimismo, Jaeger mostró de forma gráfica las trazas distribuidas correspondien
 % ----------------------
 \begin{figure}[H]
     \centering
+    \caption{Panel de Grafana mostrando el uso de CPU de los microservicios.}
     \includegraphics[width=0.8\textwidth]{contenido/imagenes/grafana-cpu.png}
-    \caption{Panel de Grafana mostrando el uso de CPU de los microservicios. Fuente: Elaboración propia.}
+    \caption*{\footnotesize Fuente: Elaboración propia.}
     \label{fig:grafana-cpu}
 \end{figure}
 
 \begin{figure}[H]
     \centering
+    \caption{Panel de Grafana mostrando la latencia de las solicitudes entre microservicios.}
     \includegraphics[width=0.8\textwidth]{contenido/imagenes/grafana-latencia.png}
-    \caption{Panel de Grafana mostrando la latencia de las solicitudes entre microservicios. Fuente: Elaboración propia.}
+    \caption*{\footnotesize Fuente: Elaboración propia.}
     \label{fig:grafana-latencia}
 \end{figure}
 
 \begin{figure}[H]
     \centering
+    \caption{Panel de Grafana mostrando el número de llamadas entre microservicios.}
     \includegraphics[width=0.8\textwidth]{contenido/imagenes/grafana-llamadas.png}
-    \caption{Panel de Grafana mostrando el número de llamadas entre microservicios. Fuente: Elaboración propia.}
+    \caption*{\footnotesize Fuente: Elaboración propia.}
     \label{fig:grafana-llamadas}
 \end{figure}
 
 \begin{figure}[H]
     \centering
+    \caption{Visualización de trazas distribuidas en Jaeger, mostrando el flujo de llamadas entre los microservicios.}
     \includegraphics[width=0.8\textwidth]{contenido/imagenes/jaeger-trazas.png}
-    \caption{Visualización de trazas distribuidas en Jaeger, mostrando el flujo de llamadas entre los microservicios. Fuente: Elaboración propia.}
+    \caption*{\footnotesize Fuente: Elaboración propia.}
     \label{fig:jaeger-trazas}
 \end{figure}
 
@@ -60,7 +64,7 @@ Para complementar las visualizaciones, se presentan tablas con los valores prome
 
 \begin{table}[H]
 \centering
-\caption{Resumen de métricas de CPU y memoria por microservicio. Fuente: Elaboración propia}
+\caption{Resumen de métricas de CPU y memoria por microservicio.}
 \begin{tabular}{lcc}
 \toprule
 Microservicio & CPU promedio (\%) & Memoria promedio (MB) \\
@@ -70,12 +74,13 @@ Service B & 10 & 90  \\
 Service C & 12 & 100 \\
 \bottomrule
 \end{tabular}
+\caption*{\footnotesize Fuente: Elaboración propia.}
 \label{tab:metricas-cpu-memoria}
 \end{table}
 
 \begin{table}[H]
 \centering
-\caption{Latencia promedio y número de llamadas entre microservicios. Fuente: Elaboración propia}
+\caption{Latencia promedio y número de llamadas entre microservicios.}
 \begin{tabular}{lcc}
 \toprule
 Tráfico & Latencia promedio (ms) & Número total de llamadas \\
@@ -85,6 +90,7 @@ B $\rightarrow$ C & 35 & 150 \\
 A $\rightarrow$ C (indirecto) & 80 & 150 \\
 \bottomrule
 \end{tabular}
+\caption*{\footnotesize Fuente: Elaboración propia.}
 \label{tab:latencias-llamadas}
 \end{table}
 

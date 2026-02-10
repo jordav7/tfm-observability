@@ -33,6 +33,7 @@ En resumen, el contexto actual exige soluciones de observabilidad integradas, co
 % -----------------------------
 \begin{figure}[H]
 	\centering
+	\caption{Diagrama de microservicios y flujos de llamadas.}
 	\shorthandoff{>}
 	\begin{tikzpicture}[
 		service/.style={rectangle, draw=blue!70, fill=blue!20, rounded corners, minimum width=3cm, minimum height=1cm, align=center},
@@ -48,9 +49,8 @@ En resumen, el contexto actual exige soluciones de observabilidad integradas, co
 		\draw[call] (B) -- (C) node[midway, right] {B$\to$C};
 		\draw[indirect, bend left=20] (A) to node[midway, above] {A$\to$C indirecta} (C);
 		
-		\node[above=0.5cm of A, align=center] {\textbf{Figura 1: Diagrama de microservicios y flujos de llamadas}};
 	\end{tikzpicture}
-	\caption{Las flechas rojas representan llamadas directas entre microservicios, mientras que la línea discontinua indica llamadas indirectas o dependencias transversales. Fuente: Elaboración propia.}
+	\caption*{\footnotesize Fuente: Elaboración propia.}
 	\label{fig:microservicios-flujos}
 \end{figure}
 
@@ -59,6 +59,7 @@ En resumen, el contexto actual exige soluciones de observabilidad integradas, co
 % -----------------------------
 \begin{figure}[H]
 	\centering
+	\caption{Servicios y pilares de observabilidad}
 	\shorthandoff{>}
 	\begin{tikzpicture}[
 		service/.style={rectangle, draw=blue!70, fill=blue!20, rounded corners, minimum width=3cm, minimum height=1cm, align=center},
@@ -80,11 +81,12 @@ En resumen, el contexto actual exige soluciones de observabilidad integradas, co
 			\draw[call] (\s.south) -- (tracing.north);
 		}
 		
-		\node[above=0.5cm of A, align=center] {\textbf{Figura 2: Servicios y pilares de observabilidad}};
 	\end{tikzpicture}
-	\caption{Todos los servicios generan métricas, logs y trazas hacia los pilares de observabilidad, permitiendo supervisión completa y correlación de eventos. Fuente: Elaboración propia.}
+	\caption*{\footnotesize Fuente: Elaboración propia.}
 	\label{fig:microservicios-observabilidad}
 \end{figure}
+
+Todos los servicios generan métricas, logs y trazas hacia los pilares de observabilidad, permitiendo supervisión completa y correlación de eventos.
 
 En conjunto, las Figuras \ref{fig:microservicios-flujos} y \ref{fig:microservicios-observabilidad} muestran primero las relaciones funcionales entre los servicios y luego cómo cada servicio contribuye a los pilares de observabilidad. Esto permite al lector entender tanto la arquitectura funcional como el flujo de información de monitoreo, logging y trazabilidad.
 
@@ -142,7 +144,7 @@ Docker y Kubernetes permiten simular entornos de producción reales, gestionar e
 
 \begin{table}[H]
 	\centering
-	\caption{Comparativa de herramientas de observabilidad y justificación de elección. Fuente: Elaboración propia.}
+	\caption{Comparativa de herramientas de observabilidad y justificación de elección.}
 	\small
 	\begin{tabularx}{\textwidth}{%
 	>{\raggedright\arraybackslash}X
@@ -181,6 +183,7 @@ Docker y Kubernetes permiten simular entornos de producción reales, gestionar e
 	Helm facilita el empaquetado y despliegue declarativo, mientras que Ansible automatiza tareas externas al clúster y es ampliamente usado en DevOps. \\
 	\bottomrule
 	\end{tabularx}
+	\caption*{\footnotesize Fuente: Elaboración propia.}
 	\label{tab:comparativa_herramientas_observabilidad}
 \end{table}
 
