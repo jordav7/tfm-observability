@@ -4,6 +4,8 @@ Este capítulo describe de forma detallada el desarrollo del prototipo de plataf
 
 Asimismo, se aborda el proceso de instrumentación de los microservicios, el despliegue en un entorno orquestado mediante Kubernetes y la validación del sistema a través de pruebas funcionales y de usabilidad. El objetivo es demostrar, de manera práctica, la viabilidad y utilidad de una solución de observabilidad integrada y reproducible en entornos distribuidos.
 
+El desarrollo descrito en este capítulo se ha llevado a cabo siguiendo la metodología definida en el Capítulo 3 y con el objetivo de cumplir los objetivos generales y específicos allí planteados. Cada una de las decisiones técnicas y fases de implementación responde directamente a los requisitos funcionales y no funcionales establecidos previamente.
+
 El capítulo se organiza de la siguiente manera: en la Sección 4.1 se presenta la planificación del proyecto, el análisis del contexto y del problema, la justificación de las tecnologías empleadas y los requisitos funcionales y no funcionales. La Sección 4.2 describe la arquitectura del sistema y el desarrollo técnico del prototipo, incluyendo la contenerización, el despliegue y la instrumentación de los microservicios, así como la integración de las herramientas de monitorización y trazabilidad. Finalmente, la Sección 4.3 expone la evaluación del sistema mediante pruebas funcionales, el análisis de su usabilidad y aplicabilidad, y las principales limitaciones identificadas junto con posibles líneas de mejora.
 
 \section{Planificación, Análisis y Requisitos}
@@ -13,10 +15,10 @@ Esta sección presenta el análisis previo necesario para el desarrollo del prot
 En base a los aspectos analizados, se identifican los principales retos que motivan el desarrollo del prototipo de observabilidad propuesto en este trabajo:
 
 \begin{itemize}
-	\item 4.1.1 Contexto y problema.
-	\item 4.1.2 Justificación de tecnologías.
-	\item 4.1.3 Organización del desarrollo.
-	\item 4.1.4 Requisitos funcionales y no funcionales.
+	\item Contexto y problema.
+	\item Justificación de tecnologías.
+	\item Organización del desarrollo.
+	\item Requisitos funcionales y no funcionales.
 \end{itemize}
 
 \subsection{Contexto y problema}
@@ -450,6 +452,8 @@ Se siguió un enfoque iterativo, con entregas semanales que incluían desarrollo
     \item Ajustar configuraciones y dashboards según necesidades.
     \item Documentar procedimientos de despliegue y operación del prototipo.
 \end{itemize}
+
+Este enfoque metodológico refuerza el carácter práctico del trabajo, demostrando no solo la viabilidad técnica de la plataforma de observabilidad, sino también su aplicabilidad en entornos reales de desarrollo y operación DevOps.
 
 \section{Integración del stack de logging ELK}\label{sec:elk}
 

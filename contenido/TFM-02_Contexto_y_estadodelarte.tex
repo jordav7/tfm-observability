@@ -8,9 +8,9 @@ Además, se analizan trabajos relacionados y se justifica la elección de las te
 
 La creciente complejidad de los sistemas distribuidos, en particular los basados en arquitecturas de microservicios, ha impulsado el desarrollo y adopción de nuevas prácticas y herramientas para la gestión eficiente de estos entornos. En este contexto, la observabilidad se ha convertido en un elemento clave para garantizar la fiabilidad, el mantenimiento y la evolución del software \cite{Ramaswamy2024, Bhosale2022, Zhang2020}.
 
-Una arquitectura de microservicios consiste en la descomposición de una aplicación en múltiples servicios pequeños, autónomos y desplegables de forma independiente \cite{Newman2015, Dragoni2017, Dragoni2017Preprint}. Esta forma de organización permite una mayor escalabilidad y flexibilidad, pero introduce importantes desafíos en cuanto al monitoreo, la gestión de logs y la trazabilidad de peticiones. A diferencia de los sistemas monolíticos, donde el diagnóstico de errores puede realizarse de forma centralizada, los microservicios requieren soluciones que permitan observar el comportamiento distribuido del sistema \cite{Singh2021}.
+Una arquitectura de microservicios consiste en la descomposición de una aplicación en múltiples servicios pequeños, autónomos y desplegables de forma independiente \cite{Newman2015, Dragoni2017, Dragoni2017Preprint}. Esta forma de organización permite una mayor escalabilidad y flexibilidad. No obstante, introduce importantes desafíos en cuanto al monitoreo, la gestión de logs y la trazabilidad de peticiones. A diferencia de los sistemas monolíticos, donde el diagnóstico de errores puede realizarse de forma centralizada, los microservicios requieren soluciones que permitan observar el comportamiento distribuido del sistema \cite{Singh2021}.
 
-El paradigma DevOps ha transformado también el ciclo de vida del software, promoviendo la automatización del desarrollo, despliegue y operación de aplicaciones. Sin embargo, para que este enfoque funcione eficazmente, es necesario contar con sistemas que permitan observar el estado de los servicios en todo momento. La observabilidad se basa en tres pilares fundamentales: monitorización, logging y tracing \cite{Google2020, CNCF2023, Ramaswamy2024}. Los tres pilares son complementarios: las métricas permiten medir rendimiento y disponibilidad, los logs registran eventos de manera detallada y las trazas facilitan seguir el recorrido de una solicitud a través de múltiples servicios.
+El paradigma DevOps ha transformado también el ciclo de vida del software, promoviendo la automatización del desarrollo, despliegue y operación de aplicaciones. Sin embargo, para que este enfoque funcione eficazmente, es necesario contar con sistemas que permitan observar el estado de los servicios en todo momento. La observabilidad se basa en tres pilares fundamentales: monitoreo, logging y tracing \cite{Google2020, CNCF2023, Ramaswamy2024}. Los tres pilares son complementarios: las métricas permiten medir rendimiento y disponibilidad, los logs registran eventos de manera detallada y las trazas facilitan seguir el recorrido de una solicitud a través de múltiples servicios.
 
 Las principales tecnologías que abordan estos aspectos incluyen:
 
@@ -22,7 +22,7 @@ Las principales tecnologías que abordan estos aspectos incluyen:
 
 Estas herramientas cuentan con soporte comunitario activo y son utilizadas por empresas que operan sistemas complejos a gran escala, como Netflix, Uber y SoundCloud. Su adopción ha permitido identificar patrones de fallo, cuellos de botella y realizar diagnósticos proactivos en producción \cite{UberCase2018, NetflixCase2019, Villamizar2021}.
 
-Asimismo, tecnologías como \textbf{Docker} y \textbf{Kubernetes} se han convertido en el estándar para el despliegue y orquestación de microservicios. A través de ellas, es posible simular entornos de producción en local —por ejemplo, mediante Minikube— y automatizar despliegues con herramientas como Helm y Ansible, facilitando tanto la reproducibilidad como la escalabilidad del sistema \cite{Lee2023, CNCFSecurity2022}. Esto garantiza que los microservicios puedan ser desplegados, escalados y monitoreados de manera coherente en entornos dinámicos.
+Asimismo, tecnologías como \textbf{Docker} y \textbf{Kubernetes} se han convertido en el estándar para el despliegue y orquestación de microservicios. A través de ellas, es posible simular entornos de producción en local —por ejemplo, mediante Minikube— y automatizar despliegues con herramientas como Helm y Ansible, facilitando tanto la reproducibilidad como la escalabilidad del sistema \cite{Lee2023, CNCFSecurity2022}. Esto garantiza que los microservicios puedan ser desplegados, escalados y observados de manera coherente en entornos dinámicos.
 
 Para el desarrollo de los microservicios, se utilizará \textbf{Spring Boot}, un framework ampliamente adoptado que permite crear aplicaciones independientes y listas para producción. Spring Boot ofrece integración nativa con métricas, logging y trazabilidad, lo que facilita la instrumentación de servicios y su integración con herramientas de observabilidad como Prometheus, Grafana y Jaeger \cite{Newman2015, Smith2022}.
 
@@ -94,7 +94,7 @@ En conjunto, las Figuras \ref{fig:microservicios-flujos} y \ref{fig:microservici
 
 Existen numerosos trabajos académicos y técnicos que abordan aspectos parciales de la observabilidad en microservicios, pero pocos ofrecen una visión completa e integrada, especialmente desde una perspectiva práctica y automatizada \cite{Kulkarni2025, Smith2022}.
 
-Por ejemplo, \cite{Zhang2020, Lee2023} propone un modelo de observabilidad basado en métricas e inteligencia artificial para anticipar errores en sistemas distribuidos, pero se enfoca principalmente en el análisis predictivo y no en la integración de herramientas específicas. Por su parte, \cite{Singh2021} presenta un estudio sobre trazabilidad con Jaeger, sin contemplar el monitoreo ni la gestión de logs.
+Por ejemplo, \cite{Zhang2020, Lee2023} proponen un modelo de observabilidad basado en métricas e inteligencia artificial para anticipar errores en sistemas distribuidos, pero se enfoca principalmente en el análisis predictivo y no en la integración de herramientas específicas. Por su parte, \cite{Singh2021} presenta un estudio sobre trazabilidad con Jaeger, sin contemplar el monitoreo ni la gestión de logs.
 
 Otras propuestas, como las de \cite{Perez2019, Smith2022}, se centran en el uso del stack ELK en sistemas monolíticos y su transición a microservicios, pero no abordan la orquestación ni la automatización de despliegue. Mientras que trabajos recientes \cite{Ramaswamy2024, Bhosale2022, Smith2022} destacan la importancia de integrar métricas, logs y trazas en un único flujo de observabilidad para mejorar la detección de anomalías y optimizar la operación de microservicios.
 
@@ -109,7 +109,7 @@ El estudio del estado del arte permite identificar las siguientes conclusiones c
 \begin{itemize}
 	\item Las arquitecturas de microservicios requieren soluciones de observabilidad completas, capaces de ofrecer visibilidad en tiempo real sobre el estado del sistema.
 	\item Existen herramientas maduras para cada pilar de la observabilidad, pero su integración y automatización continúa siendo un reto técnico relevante.
-	\item La mayoría de trabajos existentes se enfocan en uno o dos de los pilares (monitorización, logging o tracing), pero no abordan una solución integral y automatizada.
+	\item La mayoría de trabajos existentes se enfocan en uno o dos de los pilares (monitoreo, logging o tracing), pero no abordan una solución integral y automatizada.
 	\item La propuesta de este TFM se diferencia por ofrecer una integración práctica y reproducible de Prometheus, Grafana, ELK Stack, Jaeger y OpenTelemetry, todo desplegado en un entorno Kubernetes con automatización mediante Helm y Ansible.
 	\item La solución se implementará utilizando microservicios desarrollados en Spring Boot, garantizando instrumentación nativa para métricas, logs y trazabilidad.
 	\item La eficacia del sistema se evaluará mediante la capacidad de detectar fallos, la visibilidad completa de los servicios y la correlación de eventos a partir de logs y trazas.
@@ -202,4 +202,5 @@ Docker y Kubernetes permiten simular entornos de producción reales, gestionar e
     \item \textbf{KPI:} Key Performance Indicator
     \item \textbf{TLS:} Transport Layer Security
     \item \textbf{IoC:} Inversion of Control
+	\item \textbf{SRE:} Site Reliability Engineering
 \end{itemize}

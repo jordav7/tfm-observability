@@ -1,8 +1,10 @@
 \chapter{Conclusiones y trabajo futuro}\label{chap:resultados}
 
+En este capítulo se presentan las principales conclusiones derivadas de los resultados obtenidos y se plantean posibles líneas de trabajo futuro.
+
 \section{Conclusiones}
 
-Este estudio se ocupó del desafío de establecer una arquitectura de monitoreo para sistemas que emplean microservicios, centrándose en cómo reunir y representar métricas, trazas y registros mediante tecnologías de código abierto como OpenTelemetry, Prometheus y Grafana. Para probar la solución, configuramos un entorno local usando Kubernetes (Minikube), lo que nos permitió integrar y evaluar los elementos esenciales para el monitoreo y análisis del sistema.
+Este estudio se ocupó del desafío de establecer una plataforma de observabilidad para sistemas que emplean microservicios, centrándose en cómo reunir y representar métricas, trazas y registros mediante tecnologías de código abierto como OpenTelemetry, Prometheus y Grafana. Para probar la solución, configuramos un entorno de monitoreo usando Kubernetes (Minikube), lo que nos permitió integrar y evaluar los elementos esenciales para el monitoreo y análisis del sistema.
 
 A lo largo del proceso, diseñamos la arquitectura, equipamos los microservicios con el SDK de OpenTelemetry y ajustamos los componentes de monitoreo, incluyendo el OpenTelemetry Collector, Prometheus y Grafana. El resultado fue un entorno operativo que proporciona visibilidad en tiempo real sobre el rendimiento y rastreo del sistema, lo que ayuda en la identificación de cuellos de botella o fallas potenciales.
 
@@ -57,7 +59,7 @@ A pesar de que el entorno actual satisface las expectativas, existen diversas á
 	
 	\item \textbf{Documentación y capacitación:} Preparar documentación detallada y recursos educativos para facilitar la adaptación por parte de los equipos de desarrollo y operaciones, incluyendo tutoriales paso a paso, casos de prueba y ejemplos de dashboards.
 	
-	\item \textbf{Resiliencia y pruebas de carga:} Evaluar cómo la arquitectura responde bajo diferentes cargas y condiciones adversas. Esto permitiría ajustar los límites de alertas, mejorar el escalado automático y garantizar la estabilidad de los microservicios.
+	\item \textbf{Resiliencia y pruebas de carga:} Evaluar cómo la plataforma de observabilidad responde bajo diferentes cargas y condiciones adversas. Esto permitiría ajustar los límites de alertas, mejorar el escalado automático y garantizar la estabilidad de los microservicios.
 	
 	\item \textbf{Métricas de negocio:} Integrar métricas de negocio junto con métricas técnicas, para correlacionar el impacto de incidencias en la operación con indicadores clave (KPI) de la empresa. Esto amplía la utilidad de la observabilidad más allá del plano técnico.
 	

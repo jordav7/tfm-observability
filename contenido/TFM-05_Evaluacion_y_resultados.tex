@@ -1,6 +1,8 @@
 \chapter{Evaluación y resultados}
 
-En este apartado se presentan las pruebas realizadas para validar el prototipo de observabilidad. Se describen los objetivos de la evaluación, los métodos empleados para generar tráfico y capturar métricas y trazas, así como los resultados obtenidos a través de Grafana y Jaeger \cite{Ramaswamy2024, Villamizar2021}. La sección se organiza en tres subapartados: pruebas funcionales (4.3.1), usabilidad y aplicabilidad (4.3.2) y limitaciones y futuras mejoras (4.3.3), mostrando evidencia concreta de la instrumentación y la integración del sistema.
+En este apartado se presentan las pruebas realizadas para validar el prototipo de observabilidad. Se describen los objetivos de la evaluación, los métodos empleados para generar tráfico y capturar métricas y trazas, así como los resultados obtenidos a través de Grafana y Jaeger \cite{Ramaswamy2024, Villamizar2021}. La sección se organiza en tres subapartados: pruebas funcionales (5.1), usabilidad y aplicabilidad (5.2) y limitaciones y futuras mejoras (5.3), mostrando evidencia concreta de la instrumentación y la integración del sistema.
+
+Las pruebas realizadas permiten evaluar el cumplimiento de los objetivos definidos en el Capítulo 3, verificando la correcta instrumentación, visualización y trazabilidad de los microservicios, así como la aplicabilidad práctica de la plataforma propuesta.
 
 \section{Pruebas funcionales}
 
@@ -147,8 +149,8 @@ Aunque el prototipo proporciona una base sólida para la observabilidad de micro
 
 \begin{itemize}
     \item \textbf{Entorno limitado:} Al ejecutarse en Minikube, no refleja completamente la complejidad de un clúster de producción con múltiples nodos y balanceo de carga avanzado.
-    \item \textbf{Escalabilidad restringida:} La prueba se realizó con un número reducido de microservicios y tráfico simulado; escenarios con mayor concurrencia podrían requerir ajustes \cite{Lee2023, Villamizar2021}    .
-    \item \textbf{Integración parcial de logs:} La solución actual se centra en métricas y trazabilidad; la integración completa de logs centralizados (por ejemplo con ELK Stack) queda pendiente.
+    \item \textbf{Escalabilidad restringida:} La prueba se realizó con un número reducido de microservicios y tráfico simulado; escenarios con mayor concurrencia podrían requerir ajustes \cite{Lee2023, Villamizar2021}.
+    \item \textbf{Evaluación limitada del logging:} Aunque se ha integrado un sistema de logging centralizado basado en ELK Stack, su evaluación se ha centrado en la validación funcional y visual, quedando fuera de alcance un análisis exhaustivo de rendimiento, retención y escalabilidad de logs.
     \item \textbf{Alertas automáticas:} No se configuraron alertas automáticas; esto podría implementarse en futuras versiones mediante Prometheus Alertmanager.
 \end{itemize}
 

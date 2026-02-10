@@ -1,8 +1,8 @@
-\chapter{Objetivos y metodología de trabajo}\label{chap:estadodelarte}
+\chapter{Objetivos y metodología de trabajo}\label{chap:objetivos_metodologia}
 El presente capítulo establece los objetivos que guían el desarrollo de este trabajo, tanto a nivel general como en aspectos específicos. Además, se describe la metodología adoptada para alcanzar dichos objetivos, detallando las fases, técnicas y herramientas que se utilizarán para implementar y evaluar la plataforma de observabilidad en microservicios con enfoque DevOps.
 
 \section{Objetivo general}\label{sec:objgeneral}
-El objetivo general de este trabajo es diseñar, implementar y evaluar una plataforma integral de observabilidad para arquitecturas de microservicios basada en prácticas DevOps, que permita el monitoreo, registro y trazabilidad efectivos de sistemas distribuidos, con el fin de mejorar la detección, diagnóstico y resolución de fallos, optimizando así la calidad y la fiabilidad del software.
+El objetivo general de este trabajo es diseñar, implementar y evaluar una plataforma integral de observabilidad para arquitecturas de microservicios basada en prácticas DevOps, que permita el monitoreo, registro y trazabilidad efectivos de sistemas distribuidos. De este modo, se busca mejorar la detección, diagnóstico y resolución de fallos, optimizando la calidad y la fiabilidad del software.
 
 \section{Objetivos específicos}\label{sec:objespecificos}
 Para lograr el objetivo general, se plantean los siguientes objetivos específicos:
@@ -18,12 +18,12 @@ Para lograr el objetivo general, se plantean los siguientes objetivos específic
 	
 	\item Configurar el despliegue automatizado de las herramientas de observabilidad usando Helm y Ansible para facilitar la reproducibilidad y mantenimiento.
 	
-	\item Evaluar la eficacia del sistema para monitorizar, registrar y trazar las actividades y fallos en el entorno distribuido.
+	\item Evaluar la eficacia del sistema para monitorear, registrar y trazar las actividades y fallos en el entorno distribuido.
 	
 	\item Documentar exhaustivamente el proceso, incluyendo la configuración detallada de las herramientas, scripts de automatización y guías para replicar el entorno en otros contextos.
 \end{itemize}
 
-Cabe destacar que la selección de las herramientas utilizadas para cada uno de los pilares de la observabilidad (monitorización, logging y trazabilidad) ha sido detalladamente justificada en la Sección~\ref{sec:justificacion-eleccion-herramientas}. Dicha elección constituye la base sobre la cual se diseñará e implementará la solución propuesta en este trabajo, asegurando coherencia con los objetivos planteados y viabilidad técnica en entornos reales.
+Cabe destacar que la selección de las herramientas utilizadas para cada uno de los pilares de la observabilidad (monitoreo, logging y trazabilidad) ha sido detalladamente justificada en la Sección~\ref{sec:justificacion-eleccion-herramientas}. Dicha elección constituye la base sobre la cual se diseñará e implementará la solución propuesta en este trabajo, asegurando coherencia con los objetivos planteados y viabilidad técnica en entornos reales.
 
 
 \section{Metodología del trabajo}\label{sec:metodologia_trabajo}
@@ -57,7 +57,7 @@ El primer paso consiste en empaquetar cada microservicio y componente de observa
 
 \begin{itemize}
 	\item Creación de \texttt{Dockerfile} optimizados, minimizando el tamaño de las imágenes mediante el uso de imágenes base ligeras como \texttt{openjdk:17-jdk-slim} para aplicaciones Spring Boot.
-	\item Separación de capas de construcción y ejecución para reducir tiempos de despliegue y mejorar la cacheabilidad de las imágenes.
+	\item Separación de capas de construcción y ejecución para reducir tiempos de despliegue y mejorar el aprovechamiento de la caché de las imágenes.
 	\item Gestión de variables de entorno y secretos mediante archivos \texttt{.env} y soporte para Kubernetes Secrets.
 \end{itemize}
 
@@ -89,7 +89,7 @@ Con el clúster en funcionamiento, se procede a la integración de los component
 Tras el despliegue inicial, se realizan pruebas de validación para asegurar la correcta recolección y visualización de datos de observabilidad. Estas pruebas incluyen:
 
 \begin{itemize}
-	\item Generación de tráfico simulado mediante herramientas como JMeter o locust.io para evaluar métricas de rendimiento y latencia.
+	\item Generación de tráfico simulado mediante herramientas como JMeter o Locust para evaluar métricas de rendimiento y latencia.
 	\item Inserción de logs con distintos niveles (\textit{info, warning, error}) para verificar la indexación y búsqueda en ELK Stack.
 	\item Trazabilidad de peticiones a través de múltiples servicios, asegurando que Jaeger capture correctamente los spans y tiempos de respuesta.
 \end{itemize}
@@ -159,7 +159,7 @@ La combinación de Helm y Ansible aporta múltiples ventajas:
 	\item \textbf{Reproducibilidad}: cualquier entorno puede ser replicado de manera idéntica.
 	\item \textbf{Escalabilidad}: permite añadir nuevos servicios o herramientas sin afectar al resto de la plataforma.
 	\item \textbf{Seguridad}: gestión centralizada de secretos y variables sensibles.
-	\item \textbf{Reducción de errores humanos}: minimiza tareas manuales y repetitivas.
+	\item \textbf{Reducción de errores humanos}: minimiza la realización de tareas manuales y repetitivas.
 	\item \textbf{Documentación viva}: los playbooks y charts actúan como documentación operativa de la plataforma.
 \end{itemize}
 
